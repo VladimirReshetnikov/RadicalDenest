@@ -1,0 +1,698 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsthm,mathtools}
+\usepackage{newpxtext,newpxmath}
+\usepackage[margin=0.92in,headheight=15pt]{geometry}
+\usepackage{microtype,booktabs,longtable,array,enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fancyhdr,titlesec,listings,xurl}
+\usepackage[colorlinks=true,linkcolor=MidnightBlue,citecolor=MidnightBlue,urlcolor=MidnightBlue]{hyperref}
+\usepackage{bookmark}
+\definecolor{ink}{RGB}{32,63,83}
+\definecolor{pale}{RGB}{244,247,249}
+\titleformat{\section}{\Large\bfseries\color{ink}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.7em}{}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small Radical denesting / implementation review}
+\fancyhead[R]{\small September 2026}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{1.1em}
+\setlength{\emergencystretch}{2em}
+\setcounter{tocdepth}{1}
+\numberwithin{equation}{section}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Q}{\mathbb Q}\newcommand{\C}{\mathbb C}\newcommand{\R}{\mathbb R}\newcommand{\Z}{\mathbb Z}
+\newcommand{\depth}{\operatorname{depth}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\finding}[2]{\subsection{#1: #2}}
+\lstdefinelanguage{WL}{morekeywords={Module,Block,If,Which,Do,For,While,Return,True,False,Automatic,BeginPackage,EndPackage,Begin,End,Options,OptionsPattern,TimeConstrained,MemoryConstrained,RootReduce,PolynomialGCD,MinimalPolynomial,Solve,Function},sensitive=true,morecomment=[s]{(*}{*)},morestring=[b]"}
+\lstset{language=WL,basicstyle=\ttfamily\footnotesize,columns=fullflexible,keepspaces=true,breaklines=true,showstringspaces=false,frame=single,rulecolor=\color{black!20},backgroundcolor=\color{pale},tabsize=2,aboveskip=9pt,belowskip=9pt}
+\hypersetup{pdftitle={Radical Denesting after StradFixed: Safety Boundaries, Mathematical Certificates, and a Hardened Reference Implementation},pdfauthor={Technical review prepared for Vladimir Reshetnikov},pdfsubject={Wolfram Language code review with explicit source-access and execution limitations}}
+\begin{document}
+\begin{titlepage}
+\thispagestyle{empty}
+{\small\sffamily\bfseries\color{ink} SYMBOLIC COMPUTATION \quad / \quad TECHNICAL REVIEW}\par
+\vspace{0.5in}
+{\Huge\bfseries Radical Denesting\\[6pt] after \texttt{StradFixed}\par}
+\vspace{0.25in}
+{\LARGE Safety boundaries, mathematical certificates,\\and a hardened reference implementation\par}
+\vspace{0.3in}
+{\large Prepared for Vladimir Reshetnikov\par}
+{\large September 5, 2026\par}
+\vspace{0.25in}\noindent\textcolor{ink}{\rule{\textwidth}{1pt}}
+\vspace{0.1in}
+\noindent\textbf{Principal finding.} Certification must occur where a numerical subexpression is replaced, not only when the entire input happens to be an algebraic number. The recovered wrapper lets a custom solver cross this boundary without a local equality check.
+\vspace{0.18in}
+
+\noindent\textbf{Scope limitation.} The current repository directories and the initial safety/wrapper portion of \code{StradFixed.wl} were retrieved. Subsequent access failed before the rest of the source, the current report bodies, or their complete execution logs could be read. Findings identify the inspected functions and do not invent line numbers or defects in the unavailable backend. The accompanying code is an \emph{independently written replacement design}, not a source-complete patch.
+\vspace{0.18in}
+
+\noindent\textbf{Validation.} The accompanying Python run passed 156 exact mathematical checks and nine lexical/structural checks. Thirty-one native Wolfram regression tests are supplied, but \emph{were not executed}: the connected Wolfram service failed before evaluation and no local kernel was available. The replacement therefore requires native validation before production adoption.
+\vfill
+\noindent\textbf{Archive contents.} This article in PDF and LaTeX; \code{StradImproved.wl}; Wolfram regression tests and original-source probes; exact-check Python source and results; a source-access ledger and usage guide.
+\end{titlepage}
+
+\begin{abstract}
+A corrected denester can have a sound exact-number core and still expose an unsound public transformation boundary. This review separates those questions. It identifies a source-level acceptance gap for symbolic hosts, an implicit-assumptions contract problem, incomplete forwarding of option defaults, and resource limits that do not cover the entire recovered wrapper. A second branch issue is demonstrated for the common-factor helper's internal representation: positivity of an aggregate factor does not justify distributing a fractional power over its individually recorded complex factors. The latter is a helper-level counterexample, not a demonstrated wrong public numerical result; the visible numerical certification layer is an important defense.
+
+The article proves the polynomial-GCD and roots-of-unity reconstruction principles, derives local norm certificates, and explains why degree reduction, exact equality, and radical-depth improvement are different objectives. An independent reference implementation replaces markers and unrestricted symbolic cleanup with local exact acceptance, a restricted expression grammar, shared resource controls, explicit outcome reporting, and bounded bottom-up passes. Its mathematical design is analyzed separately from its unexecuted Wolfram runtime behavior. Source-access and validation limits are recorded throughout so that neither earlier repository tests nor independent SymPy checks are mistaken for a complete native audit of the present code.
+\end{abstract}
+{\small\setlength{\parskip}{0pt}\tableofcontents}
+\clearpage
+
+\section{Evidence, scope, and the correct interpretation of this review}
+\label{sec:evidence}
+
+\subsection{What was actually available}
+The requested repository organizes a literature report, downloaded literature, a unified review of earlier code, and a corrected Wolfram package in separate directories \cite{repo-report,repo-literature,repo-review,repo-code}. That organization is valuable: a claim about a mathematical algorithm, a claim made by a review, and an observation from a kernel run are different kinds of evidence.
+
+The initial raw-source response exposed the package declarations and options, the algebraicity and equality predicates, cost functions, denominator rationalization, \code{Factorc}, \code{fullfactor}, \code{combine}, the \code{Strad}/\code{DenestRadicals} wrapper, \code{recursiveCore}, \code{normalizeRadicand}, and the first \code{rationalQ} definition introducing the next section. GitHub reported 504 physical source lines; the browser's text representation used a different line count. Only its initial portion was readable. All subsequent continuation and download routes failed. In particular, the complete \code{DenestCore} implementation and the remaining multiplier machinery were not available for inspection.
+
+The current report and unified-review directory descriptions were inspected. A prior Library version of the unified literature report and an earlier review of the original algorithm supplied background, but are \emph{not} assumed to be byte-identical to the current repository versions. Relevant primary papers and official language documentation were inspected separately; this is not a claim to have read every file in the literature directory.
+
+\begin{longtable}{@{}p{0.23\textwidth}p{0.35\textwidth}p{0.35\textwidth}@{}}
+\toprule
+Material & Evidence obtained & Limit on conclusions\\\midrule\endfirsthead
+\toprule Material & Evidence obtained & Limit on conclusions\\\midrule\endhead
+\bottomrule\endfoot
+Corrected package & Recovered safety, factoring, and wrapper definitions & No complete backend audit, source snapshot, or commit hash.\\[5pt]
+Current unified review & Directory description and reported prior native testing & Its reported kernel runs were not repeated here; modular report bodies and full logs were unavailable.\\[5pt]
+Literature & Selected primary texts, including BFHT, Gkioulekas, Jeffrey--Rich, and Honsbeek & Theorems are used within their stated models, not as evidence that this package implements them completely.\\[5pt]
+This delivery & Exact Python computations, lexical/static checks, compiled PDF & No Wolfram parser, native execution, performance benchmark, or full compatibility claim.\\
+\end{longtable}
+
+The repository review description reports testing with Wolfram 15.0.1 on Windows. That is a useful provenance statement from the repository, not an execution result of this investigation \cite{repo-review}. It would be equally misleading to ignore that reported work or to inherit its success claims for newly written code.
+
+\subsection{Evidence labels used below}
+A \textbf{static finding} follows from recovered control flow or data flow. A \textbf{mathematical counterexample} disproves a transformation rule under explicitly stated inputs. A \textbf{conditional risk} identifies an unproved assumption or a plausible failure mechanism without asserting that a particular native run produced it. A \textbf{coverage limitation} describes an intentionally or accidentally unsupported transformation, not an incorrect value. Proposed test outputs are labeled as expectations, not transcripts.
+
+The highest-confidence public-interface finding is the unchecked symbolic-host solver boundary. The strongest helper-level branch finding is the aggregate-factor counterexample. Performance claims are deliberately more modest: there are structural opportunities to remove unnecessary work, but no native speedup factor has been measured.
+
+\subsection{What should not be inferred}
+Nothing here establishes that every earlier defect remains in \code{StradFixed}. The visible source already incorporates several important repairs. Nor does an uninspected backend justify a claim that its multiplier ordering, stale-state handling, termination guards, or cap arithmetic are still wrong. Those questions require the exact missing source and its tests. The accompanying access ledger records that distinction in a machine-independent form.
+
+\section{Executive assessment and priorities}
+\label{sec:priorities}
+The package should be treated as a \emph{heuristic expression optimizer with exact numerical acceptance}, not a universal minimum-depth denesting decision procedure. Its central algebraic construction is mathematically credible. The main remaining concern is that the wrapper does not consistently enforce the same acceptance policy for every supported input form.
+
+\begingroup\small
+\begin{longtable}{@{}p{0.07\textwidth}p{0.13\textwidth}p{0.49\textwidth}p{0.22\textwidth}@{}}
+\toprule ID & Priority & Finding & Evidence type\\\midrule\endfirsthead
+\toprule ID & Priority & Finding & Evidence type\\\midrule\endhead
+\bottomrule\endfoot
+F1 & High & Custom solver results may enter a symbolic host without local equality certification. & Static acceptance gap.\\[4pt]
+F2 & High & Whole-host simplification inherits ambient assumptions while the interface does not record a conditional result. & Static contract gap.\\[4pt]
+F3 & High, latent & Aggregate positivity does not validate distribution over recorded complex factors in \code{combine}. & Helper counterexample; public reachability unproved.\\[4pt]
+F4 & Medium & A core budget does not bound wrapper preprocessing, callbacks, repeated certifications, lists, and recursion together. & Static resource scope.\\[4pt]
+F5 & Medium & Delegation forwards explicit option rules rather than all effective entry-point defaults. & Static configuration gap.\\[4pt]
+F6 & Medium & Approximate rejection and Boolean failure collapse obscure unknown equality outcomes. & Reliability risk, not a shown false positive.\\[4pt]
+F7 & Medium & The score lacks an admissible-output grammar and differs from its usage description. & Objective/API issue.\\[4pt]
+F8 & Medium & Disabling the outer factor pass does not bypass factoring inside normalization. & Option-scope ambiguity.\\[4pt]
+F9 & Low--medium & All-or-nothing rollback after \code{ToRadicals} can discard useful local conversions. & Coverage limitation.\\[4pt]
+F10 & Design & Marker traversal, bounded dependency resolution, and recursive re-entry need explicit invariants and outcome reporting. & Maintenance/test obligation, not a proved loop.\\
+\end{longtable}
+\endgroup
+
+The first release priority is not a more elaborate multiplier generator. It is one invariant: \emph{every accepted numerical replacement has been certified against the exact numerical expression it replaces}. A fast incomplete search with this invariant is useful. An impressive search that occasionally bypasses it is not a dependable simplifier.
+
+\section{A precise mathematical and software contract}
+\label{sec:contract}
+
+\subsection{Values, expressions, and branches}
+An expression denotes a selected value, not merely a polynomial equation. Throughout this review, Wolfram \code{Power} means the principal complex power. For nonzero $z$ and rational $p$,
+\[
+ z^p=\exp(p\operatorname{Log}z),\qquad -\pi<\operatorname{Arg}z\le\pi.
+\]
+A real odd root is a different operation on a negative real argument. For example,
+\[
+ (1-\sqrt2)^5=41-29\sqrt2<0,
+\]
+but $1-\sqrt2$ is not the principal complex fifth root of the number on the right. Wolfram's documented distinction between \code{Power} and real-root operations is therefore an input specification, not a cosmetic convention \cite{wl-power}.
+
+The preservation requirement is
+\begin{equation}\label{eq:preserve}
+ \operatorname{value}(E_{\rm out})=\operatorname{value}(E_{\rm in})
+\end{equation}
+under the same branch and domain convention. A common minimal polynomial does not establish \eqref{eq:preserve}. For instance, $\sqrt3+\sqrt2$ and $\sqrt3-\sqrt2$ both satisfy $X^4-10X^2+1=0$, but differ by $2\sqrt2$.
+
+\subsection{Depth and presentation cost}
+For rational constants and field operations, define syntactic depth by
+\[
+ \depth(q)=0,\qquad
+ \depth(A\circ B)=\max\{\depth(A),\depth(B)\},
+ \qquad \depth(A^{p/q})=1+\depth(A)
+\]
+when $p/q$ is reduced and $q>1$. Integer powers are field operations for this purpose. A \code{Root} object is an opaque algebraic representation, not proof that a radical has depth zero in a radical-expression model. A cost function can penalize it separately, but must explain that policy.
+
+The replacement uses the lexicographic tuple
+\begin{equation}\label{eq:cost}
+ (\text{opaque algebraic objects},\ \text{depth},\
+   \text{rational-power nodes},\ \text{integer bit cost},\ \text{leaf count}).
+\end{equation}
+The bit-cost component distinguishes a short integer from one with thousands of digits, something plain leaf count does not do. This remains a chosen preference, not a canonical definition of simplicity. In particular, the initial opaque-object penalty can favor a larger radical expression over a compact \code{Root}; explicit size limits constrain that preference.
+
+The implementation-oriented measure in Jeffrey--Rich is different again: its treatment of sums is additive rather than a maximum over parallel branches \cite{jeffrey}. A proof of progress under one measure must not be advertised as progress under another.
+
+\subsection{An admissible syntax is part of the optimization problem}
+If arbitrary special functions are allowed as output atoms, a syntactic root counter can be evaded by a change of notation. A robust contract specifies both the objective and the language over which it is optimized. The replacement admits exact rational/Gaussian-rational constants, algebraic arithmetic, rational powers, and recognized algebraic \code{Root}/\code{AlgebraicNumber} objects. Other heads are not accepted as numerical proposals merely because \code{NumericQ} recognizes them.
+
+This is intentionally conservative. It excludes some perfectly valid algebraic constants written with trigonometric or other functions. The benefit is that the meaning of an accepted ``improvement'' is inspectable. A later preprocessing module may translate such constants into the admitted language, provided that translation has its own certificate.
+
+\subsection{The symbolic-host congruence principle}
+\begin{proposition}[Local certificates suffice for pure hosts]\label{prop:congruence}
+Let a host expression be built from symbols and numerical leaves using fixed, single-valued scalar operations and lists. Replace finitely many numerical leaves or numerical subexpressions by expressions denoting exactly the same selected values. Wherever the original host is defined, the reconstructed host has the same value.
+\end{proposition}
+\begin{proof}
+Proceed by structural induction. An unchanged symbol or leaf has the same value, and a certified replacement has the same value by hypothesis. At an internal node, the induction hypothesis supplies the same ordered argument values to the same operation; its selected value is therefore unchanged. For a list, apply this argument componentwise. No continuity assumption is required. Even a discontinuous principal branch returns the same result on \emph{identical} arguments. Undefined denominators and undefined powers are not converted into defined values by substituting equal arguments.
+\end{proof}
+
+This proposition explains why local certification is enough for $x+\alpha$ even though the full expression is not an algebraic number. It does \emph{not} justify transformations of arbitrary Wolfram programs. A head may inspect syntax, have holding attributes, invoke side effects, or use custom upvalues. The replacement therefore traverses only \code{List}, \code{Plus}, \code{Times}, and rational/integer \code{Power}, and assumes ordinary pure scalar semantics. Unknown heads remain opaque.
+
+\section{What the recovered corrected wrapper already does well}
+Several visible changes should be preserved. Private package symbols avoid accidental interference with common user variables. The wrapper does not globally redefine printing. Its numerical acceptance compares against the original input rather than merely a reconstructed principal root. Strict cost improvement rejects many expansions that do not help. The normalization routine reconstructs a value and verifies equality to the original radicand before wrapping it. These are meaningful defenses \cite{repo-code}.
+
+The use of exact algebraic arithmetic is also appropriate. \code{RootReduce} is documented to canonicalize the supported exact algebraic combinations; comparing its difference result with literal zero is a reasonable trusted-kernel acceptance test on that domain \cite{wl-rootreduce}. The fallback setting \code{Method -> "ExactAlgebraics"} in \code{PossibleZeroQ} is not the ordinary approximate zero heuristic: the documentation specifically gives an exact guarantee for explicit algebraic numbers \cite{wl-zero}. It would be incorrect to flag that setting itself as an approximate-proof defect.
+
+Likewise, roots-of-unity enumeration is a strength, not a branch error. It is precisely the device that avoids assuming multiplicativity of principal fractional powers. Section~\ref{sec:gcd} proves this carefully. The remaining question is where the resulting candidate is checked and what kind of expression is allowed to receive it.
+
+\section{Correctness boundaries and branch-sensitive helpers}
+\label{sec:correctness}
+
+\finding{F1}{A numerical callback crosses an unchecked symbolic boundary}
+The recovered wrapper obtains proposed solutions for marked numerical problems from a configurable solver. Its final equality filter is conditional on the \emph{whole original input} passing the algebraicity predicate. For a symbolic host this filter is skipped, and cost comparison remains as the acceptance criterion \cite{repo-code}.
+
+Consider the source-level probe
+\begin{lstlisting}
+a = Sqrt[5 + 2 Sqrt[6]];
+RadicalDenest`DenestRadicals[
+  x + a, "Solver" -> Function[z, 0]
+]
+\end{lstlisting}
+The outer radical is an exact numerical target. Replacing its marker by the solver result produces $x$. The entire original expression $x+\alpha$ is not numeric, so the whole-input equality filter does not protect this substitution. The cost of $x$ is lower because the radical nodes have disappeared. Thus $x$ becomes an eligible unchecked final candidate, even though
+\[
+ x-(x+\sqrt{5+2\sqrt6})=-\sqrt{5+2\sqrt6}\ne0.
+\]
+The expected revealing output of the probe is $x$; it was not executed here. The static defect is already the existence of this acceptance path, independently of any further behavior in the unavailable final cleanup helper.
+
+For an entirely numerical input, the visible final certification is an important backstop and should reject zero. This contrast localizes the problem: it is not evidence that \code{RootReduce} is unsound, nor that the mathematical GCD construction is wrong. It is a missing check between a callback and the surrounding expression.
+
+The same boundary must reject approximate numbers, failure symbols, unevaluated solver calls, unrelated parameters, and other malformed proposals. A callback being user-supplied does not make its mathematical result a certificate. Conversely, treating its result as untrusted does not make arbitrary callback \emph{code} safe to execute; a Wolfram simplifier is not a sandbox.
+
+\paragraph{Required repair.}
+Retain the original numerical target $\alpha$ with every proposal. Check the proposal's syntax and exactness, certify equality to $\alpha$, and only then rebuild the host. A final whole-number check can remain as defense in depth, but is not a substitute for this local gate. The replacement implements that gate in one private \code{accept} function shared by fast paths, custom solvers, generic algebraic proposals, and phase-orbit candidates.
+
+\finding{F2}{Ambient assumptions turn an unconditional interface into a conditional one}
+The recovered \code{safeSimplify} calls \code{Simplify} on the completed expression without an explicit assumptions option. Wolfram documents that this inherits \code{$Assumptions} \cite{wl-simplify}. In a symbolic host, the final exact-algebraic equality filter is skipped.
+
+A revealing probe is
+\begin{lstlisting}
+Block[{$Assumptions = x > 0},
+  RadicalDenest`DenestRadicals[Sqrt[x^2]]
+]
+\end{lstlisting}
+Under that assumption, $x$ is a valid simplification and is cheaper than the radical. Returned without its condition, however, it is not the same function on the originally unspecified domain: at $x=-2$, the principal square root of $x^2$ is $2$, not $-2$.
+
+This is not a bug in \code{Simplify}. It is a contract choice that the package must make explicitly. An assumptions-aware interface could return a condition, include assumptions in every certificate, and document the result's domain. A constants-only denester should instead avoid global symbolic cleanup and reset assumptions in its numerical proof operations. The supplied implementation takes the latter route. It does not promise symbolic parameter denesting.
+
+\finding{F3}{Positivity of a product does not justify splitting its recorded factors}
+The visible common-factor helper forms an aggregate common factor $F$ and a residual sum $S$. It permits a power transformation when the outer exponent is integral or when $F$ or $S$ is a positive real number. The guard can justify splitting $(FS)^p$ into $F^p S^p$ in the appropriate nonzero setting. But the helper reconstructs the common part as powers of the \emph{individual recorded bases}. That is a stronger transformation.
+
+An exact internal-state example is
+\begin{lstlisting}
+RadicalDenest`Private`combine[
+  {{{-1, 2}, {2, 1}}, {{-1, 2}, {3, 1}}}, 1/2
+]
+\end{lstlisting}
+The factor records represent the two terms $(-1)^2\cdot2$ and $(-1)^2\cdot3$. Their common factor is $F=(-1)^2=1>0$, and their residual sum is $S=5$. The intended value is
+\[
+ \sqrt{FS}=\sqrt5.
+\]
+Multiplying the common factor's recorded exponent by $1/2$ instead gives
+\[
+ (-1)^{2(1/2)}\sqrt5=-\sqrt5.
+\]
+The aggregate positivity test passes, but the reconstruction has lost a full winding of the argument.
+
+\begin{proposition}[The missing phase factor]\label{prop:winding}
+Suppose $a_j\ne0$ and $F=\prod_j a_j^{e_j}$, with all powers interpreted by principal logarithms. There is an integer $n$ such that
+\[
+ \sum_j e_j\operatorname{Log}a_j=\operatorname{Log}F+2\pi i n.
+\]
+Consequently, for a rational outer exponent $p$,
+\begin{equation}\label{eq:winding}
+ \prod_j a_j^{e_jp}=F^p e^{2\pi i n p}.
+\end{equation}
+Even $F>0$ does not force the final factor to be $1$.
+\end{proposition}
+\begin{proof}
+Exponentiating the difference of the two logarithmic expressions gives $1$, so the difference is an integral multiple of $2\pi i$. Multiplication by $p$ and exponentiation give \eqref{eq:winding}. In the example $a_1=-1,e_1=2$, the sum is $2\pi i$, while $\operatorname{Log}F=0$. Thus $n=1$ and $p=1/2$ yields the factor $-1$.
+\end{proof}
+
+\textbf{Scope of the counterexample.} This disproves the helper guard for the displayed internal representation. It does not prove that ordinary evaluated public input reaches that representation. Nor does it prove that \code{Factorc} returns a wrong numerical value: its visible numerical equality check should reject such a proposal. The appropriate classification is a latent helper defect plus a regression obligation, not a claimed observed public wrong answer.
+
+A narrow repair preserves the aggregate as $F^p$ instead of splitting it again. A stronger local rule demands branch-safe conditions for every individual power merge. The replacement avoids this handwritten factor representation entirely: \code{Factor} may propose an expression, but the same exact acceptance gate decides whether it may replace the original numerical target.
+
+\subsection{A branch guard that should not be condemned}
+The visible condition permitting $(a^b)^c\mapsto a^{bc}$ when $c$ is integral or when $b$ is real with $-1<b\le1$ has a sound nonzero complex rationale. If $a=\rho e^{i\theta}$ with $-\pi<\theta\le\pi$, the latter interval for $b$ keeps $b\theta$ inside the principal argument interval. Hence $\operatorname{Log}(a^b)=b\operatorname{Log}a$ and the merge is valid. The endpoint $b=-1$ is rightly excluded: $a=-1$ reaches the opposite side of the cut. Zero and undefined negative powers still need their ordinary domain checks.
+
+This is an example of why a review should distinguish a valid \emph{single-power} guard from an invalid inference about an entire factor list. They are related, but not the same proof obligation.
+
+\section{Resource, configuration, and traversal behavior}
+\label{sec:engineering}
+
+\finding{F4}{A local time limit is not a whole-call budget}
+The visible wrapper performs algebraicity checks, numerical evaluation, factorization, radical normalization, marker manipulation, callbacks, and cleanup outside any single encompassing \code{TimeBudget} region. Passing that option to \code{DenestCore} cannot bound the surrounding work. List dispatch and recursive re-entry also allow multiple local budgets rather than one shared request budget \cite{repo-code}.
+
+For $m$ numerical islands, a structural accounting is
+\[
+ T_{\rm request}=T_{\rm classification}+T_{\rm preprocessing}
+ +\sum_{j=1}^{m}\bigl(T_{{\rm search},j}+T_{{\rm verification},j}\bigr)
+ +T_{\rm reconstruction}.
+\]
+A bound on each search term alone is not a bound on this sum. Even within the equality predicate, algebraicity and the numerical prefilter occur before the timed exact operations. Multiple candidate certifications multiply the nominal certification allowance.
+
+A \code{TimeBudget -> 0} callback-counter probe is included in the original-source probes. It asks whether the callback is entered at all, rather than relying on unreliable elapsed-time comparisons. Its expected effect follows from the visible placement of the callback; it remains a native test to run against the complete source.
+
+\paragraph{Repair and its honest limits.}
+The replacement wraps traversal, generation, proof, and cost computation in one kernel resource region. A single trial counter and deadline are shared across lists and passes. Stage limits use the lesser of the per-stage allowance and remaining deadline. Timeout and memory-limit outcomes roll back to the original expression, avoiding a half-reconstructed host.
+
+Wolfram's resource primitives still have documented limitations. \code{TimeConstrained} is interrupt-based, has finite granularity, and is not a hard operating-system wall-clock bound; protected evaluation and external work can defeat an overly literal promise. \code{MemoryConstrained} is a kernel allocation control, not a container's resident-set limit \cite{wl-time,wl-memory}. Argument evaluation before function entry, option resolution, and lightweight final reporting remain outside the engine budget. The independent public factoring and rationalization helpers have separate proposal and proof allowances, not the entry-point budget.
+
+\finding{F5}{Effective option defaults disappear during delegation}
+There are two distinct issues. First, the visible alias \code{Strad} delegates only supplied option rules to \code{DenestRadicals}; it does not resolve its own defaults. Therefore setting a default on the alias does not by itself inject that setting into the delegated call. Second, the wrapper builds core options by filtering the \emph{explicit rules}, not all effective wrapper option values. A changed wrapper default need not agree with the core's independent default.
+
+The distinction matters for standard usage such as
+\begin{lstlisting}
+SetOptions[RadicalDenest`Strad, "TimeBudget" -> 0];
+RadicalDenest`Strad[expression]
+\end{lstlisting}
+The alias's declared option table is not automatically consulted merely because it exists. Options are part of executable configuration flow, not just documentation \cite{wl-options}.
+
+The replacement resolves the current defaults of the actual entry point, gives the first explicit rule precedence, normalizes option lists, evaluates delayed values into one configuration, validates that configuration, and passes it as private call state. Recursive workers do not reconstruct defaults. This also prevents accidental resetting of a remaining budget.
+
+\finding{F8}{The factor switch has a narrower effect than its name suggests}
+The outer \code{Factor} option controls \code{safeFactorAll}. However, the recovered \code{normalizeRadicand} invokes \code{Factorc} internally regardless of that switch. Thus disabling the outer factor pass does not disable all factoring work. This may be an intentional distinction between preliminary factoring and mandatory normalization, but it is not apparent from the option name.
+
+The issue is both semantic and operational: a user trying to bypass expensive factoring cannot infer that \code{Factor -> False} accomplishes it. The API should either document separate phases or provide independent switches. In the replacement, \code{"Factor" -> False} suppresses its explicit \code{Factor} proposal. It does not claim to control proprietary internal factoring performed inside \code{Simplify}, \code{MinimalPolynomial}, or other kernel algorithms.
+
+\finding{F9}{A remaining opaque root cancels unrelated successful conversions}
+The visible conversion path attempts \code{ToRadicals} on the whole expression and then restores the original expression if any \code{Root} or \code{AlgebraicNumber} remains. A host containing two different algebraic constants can therefore lose a successful conversion of one merely because the other was not converted.
+
+The better acceptance unit is the individual numerical island or root occurrence. A mixed representation with fewer opaque roots can be retained when it satisfies the chosen cost and equality policy. This is a coverage improvement, not evidence that \code{ToRadicals} itself is erroneous. The replacement no longer applies that all-or-nothing rollback.
+
+\finding{F10}{Markers add proof obligations beyond algebra}
+A marker-based implementation needs invariants about arity, marker nesting, dependency ordering, rule construction, termination, and complete removal of internal symbols. A finite iteration cap establishes a bound on one loop; it does not establish that the resulting object is a fully solved expression. An unresolved marker in a symbolic host is particularly concerning when the whole-host numerical certification is unavailable.
+
+No infinite loop or marker leak was established for the recovered corrected source. The missing helper/backend bodies and absent native run prevent that conclusion. The recommendation is architectural and test-driven: assert that no private marker or failure token escapes; distinguish exhaustion of a dependency-resolution cap from successful completion; and preserve the input on unresolved internal state.
+
+The replacement removes this intermediate language. Bottom-up traversal and bounded passes work directly with ordinary expressions. This sacrifices some potentially useful grouping heuristics, but shrinks the amount of state whose correctness must be maintained.
+
+\subsection{Conservative handling of inexact inputs is not a mathematical bug}
+The recovered wrapper declines inexact expression trees. This can miss exact islands inside a mixed tree, but it has a legitimate purpose: changing an exact subexpression may alter when surrounding floating-point arithmetic rounds. The replacement retains the conservative policy and documents it. Supporting mixed trees would require a different numerical-error contract, not simply deleting the guard.
+
+\section{Equality certification and progress metrics}
+\label{sec:certification}
+
+\finding{F6}{Unknown is neither unequal nor proved equal}
+An equality service has three useful outcomes:
+\[
+ \mathsf{Equal},\qquad\mathsf{Different},\qquad\mathsf{Unknown}.
+\]
+Resource exhaustion, unsupported syntax, and an unevaluated exact operation belong in the third category. A Boolean acceptance predicate may safely map unknown to false, but a diagnostic layer must not report that as an established inequality.
+
+The recovered predicate uses a numerical approximation to reject some candidates before exact arithmetic. This cannot create a false accepted equality by itself, since successful candidates still face an exact check. It can nevertheless reject a genuine identity if the approximate residual is unreliable, and it consumes work outside the timed exact step. A fixed absolute threshold is not an error enclosure. Wolfram's discussion of \code{$MaxExtraPrecision} explicitly warns about lost requested precision and hidden zeros \cite{wl-precision}.
+
+No native false-rejection example was executed here. The finding is a reliability and evidence problem, not an asserted observed miscalculation. Numerical evaluation is useful for ordering candidates or obtaining rigorous enclosures. It should not be treated as a proof of non-equality without a certified exclusion of zero.
+
+The replacement removes this numerical prefilter. It accepts only a literal zero obtained from exact reduction of the difference. A returned explicit nonzero canonical algebraic object can be classified as different; other outputs are unknown. A timeout is not silently upgraded to a theorem about equality or non-denestability.
+
+\subsection{Why not always call a second exact oracle?}
+\code{PossibleZeroQ} with the exact-algebraic method is a legitimate alternative on its documented domain \cite{wl-zero}. Retaining it can improve coverage when an initial conversion pathway fails. The small reference implementation deliberately uses a single acceptance mechanism instead, reducing the trusted surface and making unknown outcomes visible. This is a simplicity-versus-coverage decision, not a claim that the documented fallback is unsound.
+
+A production implementation may use several exact proof procedures, but should attach their domain assumptions and result types. In particular, the expression \code{RootReduce[d] === 0} evaluates to false even when the inner call remains unevaluated. That is fine as a conservative \emph{acceptance failure}; it is insufficient as a certificate that $d\ne0$.
+
+\finding{F7}{A score cannot replace an admissibility check}
+The recovered usage text advertises a four-component cost, while the visible definition includes an additional atom-count component. More substantively, it counts certain syntactic heads rather than defining all admissible numerical presentations. Neither issue proves wrong numerical equality, but both weaken the meaning of ``strictly cheaper.''
+
+A score also needs to account for representation growth. Leaf count treats a huge integer as one leaf. A root count does not charge for a very large root index. A depth-only objective can favor a very long sum of shallow radicals. These observations support a small integer cost tuple, explicit syntax restrictions, and separate byte/leaf/index limits rather than an opaque scalar score.
+
+The replacement's bit-cost term and size gates are improvements, not a perfect readability model. Exponent bit length contributes to the cost, but mathematical depth remains syntactic. Algebraic degree is not included as a cheap global component because obtaining it can be the expensive part of the problem itself.
+
+\section{The multiplier--polynomial-GCD mechanism}
+\label{sec:gcd}
+This section analyzes the mathematical mechanism identified in the recovered package description and earlier review material. It is not a line-by-line reconstruction of the unavailable current core. The same mechanism is implemented independently in the supplied reference code.
+
+\subsection{The construction and its coefficient field}
+Let $\beta$ be the \emph{original selected target value}. Choose $r\ge2$ and put $R=\beta^r$. For a nonzero algebraic multiplier $m$, form
+\[
+ \alpha=(mR)^{1/r},\qquad p_m(X)=\operatorname{MinPoly}_{\Q}(\alpha),
+\]
+and compute
+\begin{equation}\label{eq:gcd}
+ g_m(X)=\gcd\bigl(p_m(X),X^r-mR\bigr)
+\end{equation}
+over a field $K$ containing the algebraic coefficients used to represent $mR$. The coefficient field matters: treating displayed radicals as independent formal variables changes the computation. Wolfram's \code{Extension -> Automatic} is documented to extend the field by algebraic numbers occurring in the polynomial coefficients \cite{wl-gcd}.
+
+\begin{proposition}[What the GCD certifies]\label{prop:gcd}
+Assume characteristic zero and exact valid inputs. The polynomial $g_m$ is nonconstant. Every root $a$ of $g_m$ satisfies $a^r=mR$. If $\deg g_m<r$, at least one scaled root obeys a polynomial equation of smaller degree than the binomial.
+\end{proposition}
+\begin{proof}
+The number $\alpha$ is a common root of $p_m$ and $X^r-mR$ in an algebraic closure of $K$. If their GCD were constant, B\'ezout's identity over $K[X]$ would give a linear combination equal to $1$. Evaluation at $\alpha$ would give $0=1$. Thus the GCD is nonconstant. Since it divides the binomial, each of its roots satisfies that binomial. The degree comparison is immediate.
+\end{proof}
+
+The conclusion concerns an \emph{equation}, not automatically a radical presentation. Coefficients of a small-degree polynomial may already be deeply nested, and a solver can produce an expression that is longer or more nested than the input. Consequently a proper GCD is a candidate-generation success, not an acceptance certificate or a progress measure.
+
+\subsection{The complete phase orbit}
+\begin{theorem}[Branch recovery from any one GCD root]\label{thm:orbit}
+Suppose $m\ne0$, $R\ne0$, $r\ge2$, and $a^r=mR$. Let $\mu=m^{1/r}$ be the principal root and $\zeta_r=e^{2\pi i/r}$. Then
+\begin{equation}\label{eq:orbit}
+ \left\{\frac{a}{\mu}\zeta_r^k:0\le k<r\right\}
+\end{equation}
+is exactly the set of roots of $X^r=R$. In particular it contains the original $\beta$ whenever $\beta^r=R$.
+\end{theorem}
+\begin{proof}
+Because $\mu^r=m$ and $\mu\ne0$, $(a/\mu)^r=R$. Multiplication by $\zeta_r^k$ does not change the $r$th power. The $r$ resulting values are distinct since $a/\mu\ne0$ and the roots of unity are distinct. A degree-$r$ polynomial has at most $r$ roots, so the set is complete.
+\end{proof}
+
+No step assumes $(mR)^{1/r}=m^{1/r}R^{1/r}$. Indeed that identity is unsafe for principal complex powers. If $R=0$, the only value is zero and should be handled separately; it does not require a distinct $r$-element orbit.
+
+For implementation, $\zeta_r^k$ can be represented by $(-1)^{2k/r}$, which stays within the rational-power language. One root of the GCD already provides complete \emph{value} coverage. Other roots may produce different and useful \emph{presentations}; they should not be justified as necessary merely to recover the desired branch.
+
+The original target must remain available. For example, $\beta=-1/2+i\sqrt3/2$ satisfies $\beta^3=1$, while the principal cube root of $1$ is $1$. Replacing the target by $R^{1/r}$ would erase its embedding. Checking the final candidate against $\beta$ avoids that loss.
+
+\subsection{A complete worked multiplier example}
+Take
+\[
+ R=5+2\sqrt6,\qquad \beta=\sqrt R=\sqrt2+\sqrt3.
+\]
+For $m=1$, the minimal polynomial is
+\[
+ p_1(X)=X^4-10X^2+1.
+\]
+Over $K=\Q(\sqrt6)$, its GCD with $X^2-R$ is the entire binomial. That trial provides no smaller-degree equation.
+
+For $m=2$, however,
+\[
+ (2+\sqrt6)^2=2R,
+\qquad p_2(X)=X^2-4X-2,
+\]
+and
+\[
+ \gcd(p_2(X),X^2-2R)=X-2-\sqrt6.
+\]
+Thus the scaled root $a=2+\sqrt6$ gives
+\[
+ \frac{a}{\sqrt2}=\sqrt2+\sqrt3.
+\]
+The positive value is selected by equality to the original principal square root. The accompanying script verifies the two GCDs, minimal polynomials, and reconstruction exactly.
+
+The discriminant $\operatorname{disc}(p_1)=147456=2^{14}3^2$ makes the primes $2$ and $3$ plausible multiplier seeds. This illustrates a heuristic motivation, not a completeness theorem. Failure to find a multiplier among such primes does not prove that no useful multiplier exists.
+
+\subsection{Why degree and resource gates must be described precisely}
+A \code{MaxDegree} check after \code{MinimalPolynomial} prevents expensive downstream GCD or solving work. It does not prevent the minimal-polynomial calculation itself from visiting a large extension. The replacement labels its degree cap as a post-computation admission check and relies on the encompassing resource controls during construction.
+
+For a compact expression involving several independent radicals, field degree can be much larger than syntax size. A formula of modest depth can still generate an exponentially large compositum. This representation-sensitive difficulty is already central in the general literature; a local heuristic should not be assigned a polynomial-time guarantee merely because its individual polynomial operations are standard \cite{bfht,honsbeek,landau}.
+
+\section{Restricted fast paths with short certificates}
+\label{sec:fastpaths}
+The current source prefix announces a later quadratic helper, but its complete body was not retrieved. The implementation below therefore does not claim that elementary norm methods are new to the repository. They are derived here to make the independently written fast path and its exact tests self-contained.
+
+\subsection{Direct quadratic denesting}
+Let $a,b,c\in\Q$, $c>0$ nonsquare, $b\ne0$, and $a+b\sqrt c>0$. Seek
+\[
+ \sqrt{a+b\sqrt c}=\sqrt u+\varepsilon\sqrt v,
+ \qquad u,v\in\Q_{\ge0},\quad\varepsilon\in\{\pm1\}.
+\]
+Squaring requires
+\[
+ u+v=a,\qquad uv=\frac{b^2c}{4}.
+\]
+Therefore $u,v$ are the roots of $X^2-aX+b^2c/4$. Put $D=a^2-b^2c$. If $d=\sqrt D$ is rational, then
+\begin{equation}\label{eq:direct}
+ \sqrt{a+b\sqrt c}=
+ \sqrt{\frac{a+d}{2}}+\sgn(b)\sqrt{\frac{a-d}{2}}.
+\end{equation}
+The positive-radicand hypotheses and $D\ge0$ imply $a>0$ and $a\ge d$. Hence both inner rational radicands are nonnegative. The square of the right side is the original radicand, and its sign is positive; this selects the principal square root. Direct and indirect versions of this local theory are discussed by BFHT and Gkioulekas \cite{bfht,gkioulekas}.
+
+For $a=5,b=2,c=6$, one obtains $d=1$, so $u=3,v=2$. For $a=3,b=-2,c=2$, the sign gives $\sqrt2-1$, not $1-\sqrt2$. The latter example is a necessary regression case because the algebraic square identity alone cannot distinguish those signs.
+
+\subsection{Indirect fourth-root denesting}
+A nonsquare norm does not rule out a depth-one expression that uses fourth roots. Suppose
+\[
+ h=\sqrt{b^2-a^2/c}\in\Q_{\ge0},\qquad b>0,
+\]
+in the genuine indirect positive-real case. Then
+\begin{equation}\label{eq:indirect}
+ \sqrt{a+b\sqrt c}=c^{1/4}
+ \left(\sqrt{\frac{b+h}{2}}+\sgn(a)\sqrt{\frac{b-h}{2}}\right).
+\end{equation}
+Indeed the square of the parenthesis is
+\[
+ b+\sgn(a)\sqrt{b^2-h^2}=b+\frac{a}{\sqrt c},
+\]
+so multiplication by $\sqrt c$ gives $a+b\sqrt c$. Positivity of the selected right side completes the verification. The case $a=0$ is elementary and can be handled directly or by candidate verification.
+
+The example
+\[
+ \sqrt{4+3\sqrt2}=2^{1/4}(1+\sqrt2)
+\]
+has $D=-2$ and $h=1$. The code generates sign variants and subjects each to the same exact local acceptance gate. This permits safe complex candidates outside the displayed positive-real derivation without silently extending that derivation's hypotheses.
+
+\subsection{Restricted completeness is not a global contract}
+The classical local theory distinguishes square-root-only and fourth-root alternatives under precise hypotheses \cite{bfht,gkioulekas}. A recognizer for the visible two-term syntax is not automatically a complete implementation of that theorem: equivalent radicands may need normalization, recognition may fail, or resources may expire.
+
+Nor is an unchanged output a proof of impossibility. A particularly instructive distinction is
+\[
+ \sqrt{2+\sqrt2}=\zeta_{16}+\zeta_{16}^{-1}.
+\]
+A restriction to real radicals is different from permitting complex roots of unity. The package does not return theorem-based non-denestability certificates for either class, and the replacement always reports that its search is incomplete.
+
+\section{The proposed implementation and its invariants}
+\label{sec:implementation}
+
+\subsection{A smaller trusted transformation boundary}
+The file \code{code/StradImproved.wl} uses a separate \code{RadicalDenestImproved`} context. This allows side-by-side testing without overwriting the original package. Its high-level sequence is
+\begin{lstlisting}
+resolve and validate options once
+open one shared resource region
+walk permitted pure expression heads
+  identify an explicit numerical island
+  obtain candidate expressions
+  reject inadmissible or oversized candidates
+  require a strictly lower declared cost
+  require exact equality to the original island
+  record the accepted replacement
+rebuild the host by congruence
+return a complete result, or roll back on interruption
+\end{lstlisting}
+The generator is allowed to be incomplete. It is not allowed to decide that its own output is correct merely because it found a smaller equation or a promising numerical approximation.
+
+\subsection{Candidate sources actually implemented}
+The reference includes the direct/indirect quadratic proposals, exact algebraic reduction, low-degree radical conversion, optional built-in factoring, numerical-island simplification with explicit assumptions reset, user-solver proposals, and a finite multiplier/GCD/phase search. The default GCD solver explicitly handles linear and quadratic equations. An option permits cubic or quartic \code{Solve} proposals; these still undergo syntax, size, cost, and equality checks.
+
+Automatic multipliers include $1$, a bounded positive-integer range, and visible complementary rational-power seeds. Explicit multiplier lists are allowed; zero, inexact, unsupported, or uncertifiably nonzero entries are skipped. Structural duplicates are removed. The reference does not reconstruct the unavailable source's full discriminant-based or history-based multiplier strategy, and makes no claim of equal search coverage.
+
+\subsection{Conditional soundness of the design}
+\begin{theorem}[Soundness of accepted reference-design outputs]\label{thm:soundness}
+Assume ordinary pure scalar Wolfram semantics for the supported host operations; correct exact algebraic reduction on the admitted numerical inputs; and faithful execution of the stated acceptance and rollback logic. Then every completed accepted transformation preserves the selected value of the input wherever it was defined. This assertion does not depend on the mathematical reliability of the candidate generator.
+\end{theorem}
+\begin{proof}
+Each committed numerical replacement has a literal-zero exact difference certificate against its original island, so its selected value is equal. Proposition~\ref{prop:congruence} lifts these equalities through the supported host. Finite passes compose equalities. If the outer resource region is interrupted, the original input is returned instead of the incomplete reconstruction. Thus both successful completion and the specified rollback preserve the original selected value.
+\end{proof}
+
+This is a proof of the \emph{design under stated implementation assumptions}, not a formal verification of every Wolfram line. Native parsing, option semantics, exception handling, and regression behavior still need the supplied kernel tests. It would be circular to cite this theorem as evidence that an unexecuted implementation cannot contain a programming error.
+
+\begin{proposition}[Progress and bounded traversal]
+For successfully committed steps, the fixed cost tuple in \eqref{eq:cost} strictly decreases. Therefore there is no infinite sequence of committed decreases. Explicit finite pass and trial limits additionally bound the reference engine's search loops, subject to termination or interruption of individual kernel operations.
+\end{proposition}
+\begin{proof}
+Lexicographic order on a fixed finite product of nonnegative integers is well-founded. To see this inductively, the first coordinate can decrease only finitely often; after its final decrease it is fixed, and the remaining coordinates form a smaller well-founded lexicographic product. The acceptance gate enforces strict descent. Separately, the pass counter and the shared trial counter have finite configured maxima, and each phase orbit has bounded cardinality $r$.
+\end{proof}
+
+This excludes endless \emph{accepted progress}, but does not make a large rejected proposal inexpensive. That is why per-stage limits and the outer resource region remain necessary.
+
+\subsection{Reporting and rollback}
+\code{DenestReport} returns the result, a status, trial count, stage-failure count, unknown-certificate count, degree skips, accepted-local-step count, and bounded local equality records. Its main statuses are \code{Improved}, \code{Unchanged}, \code{Timeout}, \code{MemoryLimit}, \code{Disabled}, and \code{InvalidOptions}. An unchanged result still conflates some benign cases, including unsupported syntax and no useful candidate; the counters and source-access notes prevent it from being called a non-denestability proof.
+
+The equality records identify before/after numerical expressions and an exact-zero residual. They are useful audit records, but not portable proof objects independent of Wolfram. They can include intermediate steps discarded by a subsequent whole-call rollback. The maximum retained record count is configurable.
+
+The conservative rollback policy returns the original expression on a whole-call time or memory interruption. Retaining the best fully committed host would be a reasonable enhancement, but requires a transactional checkpoint of the \emph{complete} host. A partly updated list of local candidates is not such a checkpoint.
+
+\subsection{Defaults and compatibility decisions}
+\begin{longtable}{@{}p{0.26\textwidth}p{0.15\textwidth}p{0.51\textwidth}@{}}
+\toprule Option & Default & Meaning\\\midrule\endfirsthead
+\toprule Option & Default & Meaning\\\midrule\endhead
+\bottomrule\endfoot
+\code{"TimeBudget"} & 60 & Shared engine allowance; zero disables transformation.\\[3pt]
+\code{"StageTime"}, \code{"CertifyTime"} & 5, 5 & Per-stage upper allowances, reduced by remaining deadline.\\[3pt]
+\code{"MaxTrials"} & 64 & Shared count of expensive multiplier trials.\\[3pt]
+\code{"MultiplierCap"} & 32 & Automatic positive-integer seed range; not a universal multiplier bound.\\[3pt]
+\code{"AllLevels"}, \code{"MaxPasses"} & False, 3 & Enable bounded bottom-up passes, not arbitrary fixed-point rewriting.\\[3pt]
+\code{"MaxDegree"} & 64 & Post-computation minimal-polynomial admission limit.\\[3pt]
+\code{"MaxRootIndex"} & 24 & Limit on the GCD phase-search index.\\[3pt]
+\code{"MaxSolveDegree"} & 2 & Linear/quadratic by default; at most four when increased.\\[3pt]
+\code{"MaxLeafCount"}, \code{"MaxBytes"} & 4096, 4 MiB & Expression-size gates.\\[3pt]
+\code{"MemoryBudget"} & 256 MiB & Kernel memory constraint for the engine.\\[3pt]
+\code{"MaxRecords"} & 128 & Maximum local equality records retained.\\
+\end{longtable}
+
+The familiar \code{Strad}, \code{DenestRadicals}, and \code{DenestCore} names and the Boolean all-levels shorthand are present, but this is not a drop-in equivalence claim. Symbolic \code{Factorc} behavior is deliberately narrowed; arbitrary heads and inexact trees are not traversed; the score and default search policy differ. The usage guide lists these differences before giving migration examples.
+
+\subsection{Remaining weaknesses of the reference implementation}
+The replacement itself needs criticism. It has no native execution evidence yet. Its recursive tree walk is not a shared-subexpression graph, so repeated islands can be recomputed. It uses structural rather than algebraic duplicate detection for seeds. Repeated \code{RootReduce} calls can dominate runtime. Its minimal-polynomial degree limit is late. Built-in simplification can emit benign messages that the conservative \code{Check} policy treats as failure. The top-level outcome taxonomy could distinguish unsupported input and every particular resource gate more precisely.
+
+The \code{Root} conversion and bounded-pass policies can leave denestings undiscovered. A purely local search misses transformations that temporarily increase the cost or require a simultaneous regrouping of several terms. An arbitrary callback can still have side effects or attempt to defeat time constraints; local mathematical validation is not process isolation. These are concrete limitations, not reasons to weaken the equality boundary.
+
+\section{Verification, test coverage, and the release gate}
+\label{sec:tests}
+
+\subsection{What the executed checks establish}
+The delivered script ran with Python 3.13.5 and SymPy 1.14.0. All \textbf{165 checks passed}: 156 exact mathematical checks, four lexical-balance checks, and five static structural checks. The mathematical portion includes a generated family of direct-norm examples, selected branches, both worked polynomial GCDs, minimal polynomials and discriminant, conjugate separation, the aggregate-factor phase counterexample, denominator rationalization, cubic norm/trace identities, and a Honsbeek quartic certificate.
+
+No floating-point agreement is used as an equality certificate in those checks. Squared identities have separate exact sign facts where branch selection is claimed. The generated family verifies the algebra behind the fast path, not whether Wolfram's pattern matcher recognizes all those inputs.
+
+The lexical check balances ordinary delimiters while respecting strings and nested Wolfram comments. It is not a Wolfram parser. The static checks confirm selected architectural features in the delivered text; they do not prove absence of other bugs. The complete per-check names and results are included in \code{evidence/verification.json} and \code{evidence/verification.txt}.
+
+\subsection{The native suite that still must run}
+Thirty-one \code{VerificationTest} cases are supplied. They cover direct and indirect denesting values and depths; a Ramanujan cubic case with multiplier nine; a small positive branch; negative square-root and odd-root conventions; incorrect, failed, and approximate solver results inside a symbolic host; ambient assumptions; opaque heads; exact syntax recognition; conjugate inequality; zero and invalid budgets; option-list handling; changed alias defaults; a shared list trial budget; simple idempotence; inexact-tree policy; rationalization; symbolic factoring refusal; invalid multiplier seeds; and bounded equality records.
+
+The portable runner loads the package relative to its own path and calls \code{TestReport}. There is no claim that this suite has passed on Wolfram: it has not been run here. Some cases validate correctness even when the search returns unchanged; separate depth assertions test actual simplification on the elementary examples. This separation avoids confusing safety with search power.
+
+\subsection{Why independent algebra does not replace kernel testing}
+A correct polynomial identity can coexist with a broken Wolfram option pattern, an unintended held evaluation, an incorrectly shaped association, or a resource-abort edge case. Conversely, a passing handful of kernel examples does not prove a field-theoretic completeness theorem. Both layers are required.
+
+Before adopting the replacement, run the native suite in a clean kernel, record \code{$Version}, and add the exact Git commit and file hash of the comparison target. Then run the original-source probes, which target the recovered wrapper rather than assuming the unseen core's behavior. Any mismatch with the predicted probes should refine the finding; it should not be concealed to preserve the narrative.
+
+\subsection{A useful differential benchmark protocol}
+For each test input, retain the original expression, branch convention, admissible output language, software versions, resource settings, output, exact equality result, depth, size, and outcome status. Compare values rather than a single preferred printed expression. Keep generation time and certification time separate. Record warm-cache and clean-kernel results separately if caching is introduced.
+
+A representative corpus should include direct squares, fourth-root denestings, complex phase examples, mixed square/cube identities, large rational coefficients, close cancellation, multiple numerical islands, symbolic hosts, and cases known to require a different output model. A list of beautiful identities alone is not a reliable performance or correctness benchmark.
+
+\section{Further algorithmic improvements grounded in the literature}
+\label{sec:future}
+
+\subsection{Dependency-aware simplification before repeated local search}
+BFHT explicitly exhibit global cancellation among individually troublesome radicals \cite{bfht}. Let $u=\sqrt{1+\sqrt3}>0$. Then
+\[
+ \sqrt{3+3\sqrt3}=\sqrt3\,u,
+ \qquad \sqrt{10+6\sqrt3}=(1+\sqrt3)u,
+\]
+so
+\[
+ \sqrt{1+\sqrt3}+\sqrt{3+3\sqrt3}-\sqrt{10+6\sqrt3}=0.
+\]
+This suggests a graph of algebraic dependencies, not just a queue of isolated outer roots. A practical next step is to cache exact normal forms of repeated islands and use certified ratios or products to group dependent terms. The reference's whole numerical-island \code{RootReduce} proposal can catch some cancellation, but it is not an efficient specialized dependency algorithm.
+
+Cache entries should store their supported domain, selected embedding, and failure status. An unknown result obtained under a short budget must not become a permanent negative answer under a larger budget. Context-sensitive symbolic assumptions are another reason to keep the first cache numerical and per call.
+
+\subsection{A cubic-in-quadratic module}
+For real cube-root output constrained to $\Q(\sqrt p)$, write
+\[
+ (A+B\sqrt p)^3=a+b\sqrt p,\qquad a,b,p,A,B\in\Q,
+\]
+with $p>0$ nonsquare and $b\ne0$. Taking norms gives
+\[
+ a^2-b^2p=t^3,\qquad t=A^2-pB^2.
+\]
+Putting $x=2A$ yields
+\begin{equation}\label{eq:cubic}
+ x^3-3tx-2a=0,\qquad A=x/2,\qquad B=\frac{b}{x^2-t}.
+\end{equation}
+The sufficiency of this reconstruction follows from the polynomial identity
+\begin{equation}\label{eq:cubic-cert}
+ (x^3-3tx)^2-4t^3=(x^2-t)^2(x^2-4t).
+\end{equation}
+Under the stated equations, its left side is $4b^2p$, so the denominator in \eqref{eq:cubic} is nonzero and $pB^2=A^2-t$. Substitution then verifies the rational and irrational parts of the cube. This gives a small complete module for a \emph{specified field-output problem}, not unrestricted cubic denesting.
+
+A cube norm alone is insufficient: $a=b=1,p=2$ gives norm $-1$, but $x^3+3x-2$ has no rational root. Rational polynomial factorization, rather than an unrestricted integer-divisor search, is a natural implementation route. Negative real radicands still require conversion between the real cube root and the package's principal complex-power convention. The module is a proposed extension, not present in the supplied Wolfram reference.
+
+\subsection{Honsbeek's mixed-index criterion as a plugin}
+For nonzero rational $\alpha,\beta$ with $q=\beta/\alpha$ not a rational cube, Honsbeek's Theorem 104 relates denesting of $\sqrt{\sqrt[3]\alpha+\sqrt[3]\beta}$ in the stated radical-closure model to a rational root of
+\[
+ F_q(s)=s^4+4s^3+8qs-4q.
+\]
+The formula on printed page 63 uses compatible roots and an appropriate sign \cite{honsbeek}. Its reconstruction can be checked by the compact polynomial certificate
+\begin{equation}\label{eq:honsbeek}
+ \left(-\frac{s^2}{2}+su+u^2\right)^2
+ -(u^3-s^3)(1+u)=\frac{F_{u^3}(s)}4.
+\end{equation}
+This is a good candidate-generator module because both its recognition conditions and algebraic residual are explicit. Branch selection, the noncube assumption, and nonvanishing denominators must still be checked. Merely applying the displayed formula to unrelated syntax would lose the theorem's hypotheses.
+
+The reference does not implement this module. The exact certificate and two rational-root examples are included in the Python checks so that a future implementation has a small algebraic regression foundation.
+
+\subsection{Field-aware multiplier generation and phase reduction}
+The multiplier search can exploit known field structure more directly than raw integer enumeration. Useful experiments include deriving candidates from norm factorizations, tracking which extension is represented by the current coefficients, and choosing a basis that accounts for multiplicative relations before coefficient comparison. Honsbeek's analysis of radical extensions and roots of unity explains why such information is structural rather than a matter of notation \cite{honsbeek}.
+
+The phase-orbit theorem also suggests an optimization: certify one root of the GCD and enumerate its orbit first. Search additional roots only for a better presentation. Candidate equality normal forms can eliminate duplicate work, but phase selection must remain tied to the original target, not to a nearby numerical value or a common minimal polynomial.
+
+Any discriminant-based multiplier generator should state what its cutoff means. A bound on multiplier magnitude, a bound on the number of seeds, and a bound on the algebraic degree of a multiplier are different controls. Progress history should never turn ``not tried within this budget'' into ``mathematically excluded.''
+
+\subsection{Portable certificates and stronger isolation}
+The present equality records trust Wolfram's exact algebraic arithmetic. A more portable certificate would contain a defining polynomial, exact coefficient relations, nonzero denominator evidence, and a root-isolating interval or complex region identifying the selected value. For restricted formulas, a polynomial remainder plus exact sign information is often much smaller than a full field description.
+
+For strict time and memory guarantees, execute candidate generators in separate worker processes controlled by an operating-system supervisor. Accept only serialized expressions in a restricted grammar, then check them in a separate trusted verifier. That design addresses both uninterruptible work and the difference between an untrusted mathematical answer and hostile executable code. It is an architectural extension, not a property provided by \code{TimeConstrained} alone.
+
+\section{Recommended disposition}
+The recovered corrected source has the right core instinct: preserve the original selected value and insist on exact evidence for numerical changes. The most important remaining repair is to apply that instinct at \emph{every} public replacement boundary. Symbolic hosts cannot be protected by a test that runs only for wholly numerical inputs.
+
+The immediate integration sequence is to recover and pin the complete current source; run the supplied wrapper probes and native regression suite; repair local callback acceptance and assumptions scope; resolve options once and share budgets; and only then compare search coverage and performance. The helper-level winding example belongs in the regression corpus even if public reachability is disproved, because it documents why the aggregate guard is insufficient in isolation.
+
+The independently written implementation supplies a concrete basis for that work. It reduces the state machinery, makes its expression model and failure outcomes visible, and keeps mathematical proof separate from heuristic discovery. It is not presented as a finished production replacement, a complete review of unavailable source, or a proof that the original repository's unseen backend is defective.
+
+\appendix
+\section{How to reproduce the delivered evidence}
+From the archive root, run
+\begin{lstlisting}[language={}]
+python tests/verify_math.py
+wolframscript -file tests/run_tests.wls
+pdflatex -interaction=nonstopmode -halt-on-error review.tex
+pdflatex -interaction=nonstopmode -halt-on-error review.tex
+\end{lstlisting}
+Only the Python and LaTeX commands were executed in this environment. The native Wolfram command is the next validation step. The exact-check output identifies every assertion and the software versions; it does not contain invented Wolfram output.
+
+Use fully qualified package names when comparing implementations:
+\begin{lstlisting}
+Get["/path/to/StradFixed.wl"];
+Get["/path/to/StradImproved.wl"];
+old = RadicalDenest`Strad[expr];
+new = RadicalDenestImproved`Strad[expr];
+RadicalDenestImproved`EqualityStatus[old, expr]
+RadicalDenestImproved`EqualityStatus[new, expr]
+\end{lstlisting}
+The independent implementation deliberately does not overwrite the original definitions. A literal unchanged result counts as safe but not as a successful denesting. The case \code{"MaxTrials" -> 0} disables only generic multiplier trials; \code{"TimeBudget" -> 0} is the explicit no-transformation mode.
+
+\section{Complete proposed Wolfram implementation}
+The following is the exact proposed implementation included in the archive. It was lexically checked, not parsed or executed by a Wolfram kernel. Its inline comments and the contract in Section~\ref{sec:implementation} are part of the deliverable.
+\lstinputlisting[numbers=left,numberstyle=\tiny\color{black!50},numbersep=6pt,xleftmargin=1.8em]{code/StradImproved.wl}
+
+\clearpage
+\begin{thebibliography}{99}
+\addcontentsline{toc}{section}{References}
+\bibitem{repo-code} V. Reshetnikov, \emph{RadicalDenest: StradFixed.wl}, current branch URL supplied for review. Initial safety/wrapper portion inspected; remaining source unavailable. \url{https://github.com/VladimirReshetnikov/RadicalDenest/blob/main/src/corrected/StradFixed.wl}.
+\bibitem{repo-report} V. Reshetnikov, \emph{RadicalDenest, docs/report}. Current directory description inspected; earlier Library report used only as background. \url{https://github.com/VladimirReshetnikov/RadicalDenest/tree/main/docs/report}.
+\bibitem{repo-literature} V. Reshetnikov, \emph{RadicalDenest, docs/literature}. Directory and download description. \url{https://github.com/VladimirReshetnikov/RadicalDenest/tree/main/docs/literature}.
+\bibitem{repo-review} V. Reshetnikov, \emph{RadicalDenest, src/code-review/unified}. Current directory description, including reported earlier Wolfram tests; report bodies and full logs not retrieved. \url{https://github.com/VladimirReshetnikov/RadicalDenest/tree/main/src/code-review/unified}.
+\bibitem{bfht} A. Borodin, R. Fagin, J. E. Hopcroft, and M. Tompa, ``Decreasing the Nesting Depth of Expressions Involving Square Roots,'' \emph{Journal of Symbolic Computation} \textbf{1} (1985), 169--188. \url{https://www.cs.toronto.edu/~bor/Papers/decreasing-nesting-depth-for-expressions.pdf}.
+\bibitem{gkioulekas} E. Gkioulekas, ``On the denesting of nested square roots,'' \emph{International Journal of Mathematical Education in Science and Technology} \textbf{48}(6) (2017), 942--953. Author manuscript dated December 21, 2016. \url{https://faculty.utrgv.edu/eleftherios.gkioulekas/papers/submitted/denesting-square-roots.pdf}.
+\bibitem{jeffrey} D. J. Jeffrey and A. D. Rich, ``Simplifying Square Roots of Square Roots by Denesting,'' in M. J. Wester (ed.), \emph{Computer Algebra Systems: A Practical Guide}, Wiley, 1999, 61--72. \url{https://cybertester.com/data/denest.pdf}.
+\bibitem{honsbeek} M. Honsbeek, \emph{Radical Extensions and Galois Groups}, Ph.D. thesis, Radboud University Nijmegen, 2005. In particular, Chapter 3, Theorem 104 and formula (3.5). \url{https://www.math.ru.nl/~bosma/students/honsbeek/M_Honsbeek_thesis.pdf}.
+\bibitem{landau} S. Landau, \emph{How to Tangle with a Nested Radical}, technical-report copy, University of Massachusetts, 1991. Historical exposition; not used to characterize the current state solely from its introductory wording. \url{https://web.cs.umass.edu/publication/docs/1991/UM-CS-1991-076.pdf}.
+\bibitem{wl-power} Wolfram Research, \emph{Power}, Wolfram Language documentation, accessed September 5, 2026. \url{https://reference.wolfram.com/language/ref/Power.html}.
+\bibitem{wl-rootreduce} Wolfram Research, \emph{RootReduce}, official documentation. \url{https://reference.wolfram.com/language/ref/RootReduce.html}.
+\bibitem{wl-zero} Wolfram Research, \emph{PossibleZeroQ}, especially the \code{"ExactAlgebraics"} method. \url{https://reference.wolfram.com/language/ref/PossibleZeroQ.html}.
+\bibitem{wl-simplify} Wolfram Research, \emph{Simplify}, especially the assumptions and complexity options. \url{https://reference.wolfram.com/language/ref/Simplify.html}.
+\bibitem{wl-time} Wolfram Research, \emph{TimeConstrained}, official resource and interrupt semantics. \url{https://reference.wolfram.com/language/ref/TimeConstrained.html}.
+\bibitem{wl-memory} Wolfram Research, \emph{MemoryConstrained}, official documentation. \url{https://reference.wolfram.com/language/ref/MemoryConstrained.html}.
+\bibitem{wl-options} Wolfram Research, \emph{Options}, official documentation. \url{https://reference.wolfram.com/language/ref/Options.html}.
+\bibitem{wl-gcd} Wolfram Research, \emph{PolynomialGCD}, especially \code{Extension -> Automatic}. \url{https://reference.wolfram.com/language/ref/PolynomialGCD.html}.
+\bibitem{wl-precision} Wolfram Research, \emph{\$MaxExtraPrecision}, especially hidden zeros and loss of requested precision. \url{https://reference.wolfram.com/language/ref/\$MaxExtraPrecision.html}.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,105 @@
+{
+  "status": "PASS",
+  "scope": "Independent exact arithmetic/algebra and limited lexical checks; NOT native Wolfram execution",
+  "python": "3.13.5",
+  "sympy": "1.14.0",
+  "assertions": 1960,
+  "groups": {
+    "direct_quadratic": 450,
+    "negative_radicand_branch": 450,
+    "indirect_quadratic": 300,
+    "indirect_sign_counterexample": 1,
+    "cubic_trace_norm": 270,
+    "honsbeek_symbolic_identity": 1,
+    "honsbeek_rational_parameters": 68,
+    "honsbeek_reversal_examples": 1,
+    "ramanujan_square_certificate": 1,
+    "horner_inverse_polynomials": 40,
+    "multiplier_gcd": 2,
+    "original_target_orbit": 4,
+    "norm_only_multiplier_counterexample": 1,
+    "aggregate_factor_branch_counterexample": 1,
+    "old_cap_counterexamples": 3,
+    "bounded_scheduler_model": 363,
+    "wl_lexical_balance": 4
+  },
+  "multiplier_examples": [
+    {
+      "rho": "sqrt(3) + 2",
+      "m": "2",
+      "minpoly": "x**2 - 2*x - 2",
+      "gcd": "x - sqrt(3) - 1"
+    },
+    {
+      "rho": "2*sqrt(6) + 5",
+      "m": "2",
+      "minpoly": "x**2 - 4*x - 2",
+      "gcd": "x - sqrt(6) - 2"
+    }
+  ],
+  "baseline_cap_counterexamples": [
+    {
+      "q": 3,
+      "cap": 1,
+      "primes": [
+        5
+      ],
+      "batch": [
+        5,
+        25
+      ]
+    },
+    {
+      "q": 2,
+      "cap": 1,
+      "primes": [
+        5,
+        13
+      ],
+      "batch": [
+        5,
+        13
+      ]
+    },
+    {
+      "q": 5,
+      "cap": 2,
+      "primes": [
+        2
+      ],
+      "batch": [
+        2,
+        4,
+        8,
+        16
+      ]
+    }
+  ],
+  "source_files": [
+    {
+      "file": "StradImproved.wl",
+      "bytes": 26788,
+      "sha256": "024cbd6e951e449c3e99b241a710cb84d7ab52ad33a91f4e8035f5ee9b905407"
+    },
+    {
+      "file": "tests/BaselineProbes.wls",
+      "bytes": 1771,
+      "sha256": "42dba1c78c9f8778f8b8a168767a707be31f4aa69c2a8f8e12e7dc916a416959"
+    },
+    {
+      "file": "tests/Regression.wlt",
+      "bytes": 8805,
+      "sha256": "193ce8b022ef30e074d9dd5fb55388c82189646d4234d03e3ce4cead960e9dc8"
+    },
+    {
+      "file": "tests/RunTests.wls",
+      "bytes": 2227,
+      "sha256": "c079fe553420911cdbb26ae26cdc1f67d70c70fbb96a8bce2e429f06cc05cb96"
+    }
+  ],
+  "native_wolfram_tests": {
+    "status": "NOT RUN",
+    "reason": "Wolfram connector returned MCP HTTP 404; no local kernel"
+  },
+  "elapsed_seconds": 0.518
+}

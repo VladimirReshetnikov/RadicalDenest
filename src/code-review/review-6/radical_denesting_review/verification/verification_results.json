@@ -1,0 +1,206 @@
+{
+  "scope": "Independent mathematics and finite control-flow models only",
+  "native_wolfram_executed": false,
+  "python": "3.13.5",
+  "sympy": "1.14.0",
+  "elapsed_seconds": 0.126,
+  "checks": [
+    {
+      "name": "trace_norm_factorization",
+      "passed": true
+    },
+    {
+      "name": "ramanujan_polynomial_certificate",
+      "passed": true
+    },
+    {
+      "name": "honsbeek_quartic_certificate",
+      "passed": true
+    },
+    {
+      "name": "direct_quadratic_family",
+      "passed": true,
+      "cases": 144,
+      "method": "Exact coefficient identities, U>=V>=0, signed cross term."
+    },
+    {
+      "name": "indirect_fourth_root_family",
+      "passed": true,
+      "cases": 108,
+      "method": "Exact squared identity and U>=V>=0 select principal square root."
+    },
+    {
+      "name": "cubic_quadratic_family",
+      "passed": true,
+      "cases": 60
+    },
+    {
+      "name": "cube_norm_not_sufficient",
+      "passed": true
+    },
+    {
+      "name": "direct_plus_square",
+      "passed": true
+    },
+    {
+      "name": "direct_plus_positive",
+      "passed": true
+    },
+    {
+      "name": "direct_minus_square",
+      "passed": true
+    },
+    {
+      "name": "direct_minus_positive",
+      "passed": true
+    },
+    {
+      "name": "two_square_roots_square",
+      "passed": true
+    },
+    {
+      "name": "two_square_roots_positive",
+      "passed": true
+    },
+    {
+      "name": "indirect_plus_square",
+      "passed": true
+    },
+    {
+      "name": "indirect_plus_positive",
+      "passed": true
+    },
+    {
+      "name": "indirect_minus_square",
+      "passed": true
+    },
+    {
+      "name": "indirect_minus_positive",
+      "passed": true
+    },
+    {
+      "name": "multiquadratic_square",
+      "passed": true
+    },
+    {
+      "name": "multiquadratic_positive",
+      "passed": true
+    },
+    {
+      "name": "partial_square",
+      "passed": true
+    },
+    {
+      "name": "partial_positive",
+      "passed": true
+    },
+    {
+      "name": "imaginary_branch",
+      "passed": true
+    },
+    {
+      "name": "complex_quadratic",
+      "passed": true
+    },
+    {
+      "name": "principal_negative_cube_not_real",
+      "passed": true
+    },
+    {
+      "name": "cyclotomic_eighth_root_certificate",
+      "passed": true,
+      "note": "Uses z^(-1)=-z^7 and z^8=-1; selection of z=exp(i*pi/8) discussed in article."
+    },
+    {
+      "name": "ramanujan_multiplier_gcd_linear",
+      "passed": true,
+      "minimal_polynomial": "x**3 - 3*x**2 + 9*x - 9",
+      "gcd": "x - 2**(2/3) - 1 + 2**(1/3)"
+    },
+    {
+      "name": "ramanujan_multiplier_root",
+      "passed": true
+    },
+    {
+      "name": "old_cap_0_counterexample",
+      "passed": true,
+      "advertised_cap": 0,
+      "actual_count": 5,
+      "multipliers": [
+        2,
+        3,
+        5,
+        7,
+        11
+      ]
+    },
+    {
+      "name": "old_cap_1_counterexample",
+      "passed": true,
+      "advertised_cap": 1,
+      "actual_count": 5,
+      "multipliers": [
+        2,
+        3,
+        5,
+        7,
+        11
+      ]
+    },
+    {
+      "name": "old_cap_7_counterexample",
+      "passed": true,
+      "advertised_cap": 7,
+      "actual_count": 9,
+      "multipliers": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        10,
+        11,
+        15,
+        30
+      ]
+    },
+    {
+      "name": "revised_queue_model_caps",
+      "passed": true,
+      "caps_tested": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "note": "Python model of insertion invariant, not execution of WL queue."
+    },
+    {
+      "name": "history_sensitive_gate",
+      "passed": true,
+      "note": "Control-flow scenario; no concrete radical realizing the complete history is asserted."
+    },
+    {
+      "name": "denominator_inverse_certificate",
+      "passed": true
+    }
+  ],
+  "all_passed": true,
+  "property_cases": 312
+}
