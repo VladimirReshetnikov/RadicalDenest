@@ -1,0 +1,835 @@
+{
+  "scope": "Independent exact mathematics and lexical checks only; not Wolfram execution",
+  "python": "3.13.5",
+  "sympy": "1.14.0",
+  "checks": 165,
+  "passed": 165,
+  "native_wolfram_tests_executed": false,
+  "details": [
+    {
+      "name": "direct-norm-discriminant",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "indirect-norm-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "square-3-square",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "square-3-branch",
+      "passed": true,
+      "detail": "exact positivity of candidate or candidate / I"
+    },
+    {
+      "name": "square-5-square",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "square-5-branch",
+      "passed": true,
+      "detail": "exact positivity of candidate or candidate / I"
+    },
+    {
+      "name": "square-small-square",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "square-small-branch",
+      "passed": true,
+      "detail": "exact positivity of candidate or candidate / I"
+    },
+    {
+      "name": "fourth-root-square",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "fourth-root-branch",
+      "passed": true,
+      "detail": "exact positivity of candidate or candidate / I"
+    },
+    {
+      "name": "negative-square-square",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "negative-square-branch",
+      "passed": true,
+      "detail": "exact positivity of candidate or candidate / I"
+    },
+    {
+      "name": "generated-direct-2-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-2-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-3-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-3-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-3-2-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-3-2-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-4-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-4-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-4-2-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-4-2-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-4-3-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-4-3-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-5-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-5-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-5-2-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-5-2-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-5-3-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-5-3-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-5-4-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-5-4-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-6-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-6-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-6-2-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-6-2-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-6-3-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-6-3-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-6-4-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-6-4-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-6-5-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-6-5-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-7-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-7-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-7-2-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-7-2-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-7-3-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-7-3-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-7-4-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-7-4-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-7-5-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-7-5-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-7-6-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-7-6-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-8-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-8-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-8-2-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-8-2-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-8-3-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-8-3-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-8-4-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-8-4-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-8-5-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-8-5-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-8-6-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-8-6-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-8-7-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-8-7-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-9-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-9-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-9-2-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-9-2-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-9-3-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-9-3-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-9-4-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-9-4-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-9-5-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-9-5-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-9-6-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-9-6-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-9-7-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-9-7-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-9-8-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-9-8-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-10-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-10-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-10-2-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-10-2-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-10-3-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-10-3-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-10-4-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-10-4-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-10-5-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-10-5-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-10-6-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-10-6-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-10-7-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-10-7-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-10-8-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-10-8-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-10-9-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-10-9-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-1-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-1-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-2-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-2-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-3-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-3-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-4-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-4-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-5-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-5-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-6-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-6-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-7-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-7-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-8-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-8-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-9-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-9-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "generated-direct-11-10-norm",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "generated-direct-11-10-identity",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "quartic-minimal-polynomial",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "quartic-discriminant",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "quartic-discriminant-factorization",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "gcd-no-proper-reduction-at-m1",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "scaled-minimal-polynomial",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "gcd-linear-at-m2",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "scaled-reconstruction",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "gcd-simple-linear",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "same-polynomial-opposite-small-conjugate",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "conjugates-not-equal",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "square-product-phase-gap",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "square-product-is-not-square-of-product",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "original-beta-cubes-to-one",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "original-beta-is-not-principal-root-of-one",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "phase-orbit-cube-root-1",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "phase-orbit-cube-root-2",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "three-phase-values-distinct",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "negative-fifth-real-value",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "fifth-radicand-negative",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "fifth-principal-sector-excludes-negative-real",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aggregate-factor-positive",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "helper-fault-residual",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "aggregate-positivity-insufficient",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "rationalization-polynomial-remainder",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "rationalization-value",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "trace-norm-polynomial-certificate",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "cube-norm-not-sufficient",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "cubic-quadratic-example",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "honsbeek-quartic-certificate",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "honsbeek-ratio-minus-four-fifths",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "honsbeek-swapped-ratio",
+      "passed": true,
+      "detail": "exact residual = 0"
+    },
+    {
+      "name": "ramanujan-cubic-certificate",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "symbolic-callback-error",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "assumption-drop-error-at-negative-x",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "lexical-balance-code/StradImproved.wl",
+      "passed": true,
+      "detail": "{'bytes': 16326, 'lines': 317}; NOT a native parse"
+    },
+    {
+      "name": "lexical-balance-tests/regression.wlt",
+      "passed": true,
+      "detail": "{'bytes': 6268, 'lines': 128}; NOT a native parse"
+    },
+    {
+      "name": "lexical-balance-tests/run_tests.wls",
+      "passed": true,
+      "detail": "{'bytes': 745, 'lines': 13}; NOT a native parse"
+    },
+    {
+      "name": "lexical-balance-tests/original_reproducers.wl",
+      "passed": true,
+      "detail": "{'bytes': 1395, 'lines': 25}; NOT a native parse"
+    },
+    {
+      "name": "no-PowerExpand",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "no-marker-engine",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "no-ReplaceRepeated-engine",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "explicit-assumptions-reset",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "callback-proposal-has-local-acceptance-gate",
+      "passed": true,
+      "detail": ""
+    }
+  ]
+}

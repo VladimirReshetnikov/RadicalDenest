@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-05",
+  "repository": "VladimirReshetnikov/RadicalDenest",
+  "commit": "6d7739bda3478f0d9cd70ffb9f7c49ee2576bee7",
+  "baseline_path": "src/corrected/StradFixed.wl",
+  "baseline_git_blob_sha1": "0625aca12ac28cbe16cb09489c22150aa294c1fc",
+  "other_repository_sources": [
+    "docs/report/radical_denesting_unified.tex",
+    "src/code-review/unified/sec_corrected.tex",
+    "src/code-review/unified/sec_future.tex",
+    "docs/literature/RETYPESET_ARTICLES.md",
+    "docs/literature/papers/bfht-Decreasing-the-nesting-depth-of-expressions-involving-square-root/retypeset-2026/symb85.tex",
+    "docs/literature/papers/gkioulekas-On-the-denesting-of-nested-square-roots/retypeset-2026/gkioulekas2017.tex",
+    "docs/literature/papers/jeffrey-Simplifying-square-roots-of-square-roots-by-denesting/retypeset-2026/denest.tex",
+    "docs/literature/papers/landau92-Simplification-of-nested-radicals/retypeset-2026/landau1989.tex"
+  ],
+  "primary_author_pdf_inspected": "https://faculty.utrgv.edu/eleftherios.gkioulekas/papers/submitted/denesting-square-roots.pdf",
+  "primary_author_pdf_pages_visually_inspected": [
+    6,
+    7
+  ],
+  "editorial_retypesettings": "Repository corrected editions are distinguished from author/publisher versions.",
+  "native_wolfram_status": "NOT RUN: connector MCP HTTP 404; no local kernel",
+  "independent_checks": "verification/results.json",
+  "improved_implementation_status": "Proposed redesign; native regression gate remains outstanding",
+  "no_repository_modifications": true
+}
