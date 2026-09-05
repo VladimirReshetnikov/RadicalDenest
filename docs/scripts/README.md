@@ -52,10 +52,13 @@ One file obtained by hand was then registered with
 `radical_literature_retrieval_package/register_manual_file.py`, which copies a
 file into the record's version folder and updates the manifest with its
 SHA-256 and origin: the Internet Archive scan of Fateman's MIT-LCS-TR-095 (a
-different scan from the CSAIL copy). The re-typeset articles under
-`docs/articles/*/` (Landau 1989, Gkioulekas 2017, and others) are kept there
-only, not duplicated in the dataset. Final tally: 95 assets, 47 PDFs, 43 TeX
-files, 64 works.
+different scan from the CSAIL copy). The former `docs/articles/` directory was
+then folded into the dataset: its four scans that were byte-identical to
+downloaded files were dropped, the six corrected re-typesettings (LaTeX,
+PDF, corrections log) were moved to `papers/<record>/retypeset-2026/`
+(see `docs/literature/RETYPESET_ARTICLES.md`), and the Wikipedia snapshot to
+`web_resources/wikipedia-Nested-radical/snapshot-pdf-2026/`. Final tally:
+102 assets, 54 PDFs, 49 TeX files, 66 works.
 
 ## How the files were obtained
 

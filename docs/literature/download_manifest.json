@@ -2,11 +2,11 @@
   "started": "2026-09-05T20:29:14+00:00",
   "finished": "2026-09-05T20:31:14+00:00",
   "totals": {
-    "successful_assets": 95,
+    "successful_assets": 102,
     "failed_assets": 26,
-    "pdf_files": 47,
-    "tex_files": 43,
-    "records_with_downloads": 64,
+    "pdf_files": 54,
+    "tex_files": 49,
+    "records_with_downloads": 66,
     "selected_records_without_any_asset_route": [
       "zippel85",
       "horng90",
@@ -9071,9 +9071,261 @@
           "sha256": "acc882cf73abed4c183c64ff72f57ebd0cacdf39fa633d4d1fcfdb405a2f7ad6"
         }
       ]
+    },
+    {
+      "record_id": "berndt98",
+      "title": "Radicals and units in Ramanujan's work",
+      "asset_id": "retypeset-2026",
+      "version": "retypeset-2026",
+      "kind": "retypeset",
+      "status": "downloaded",
+      "retrieval": {
+        "method": "moved from docs/articles (repository content, not a network download)",
+        "retrieved_at": "2026-09-05T20:58:29+00:00"
+      },
+      "resolution": {},
+      "catalog_evidence_level": "editorial_retypesetting",
+      "note": "Corrected editorial re-typesetting (LaTeX source, compiled PDF, corrections log) prepared in September 2026 from the OCR of the original scan; not a facsimile of the published article. See RETYPESET_ARTICLES.md.",
+      "warnings": [],
+      "files": [
+        {
+          "path": "papers/berndt98-Radicals-and-units-in-Ramanujan-s-work/retypeset-2026/aa8725.pdf",
+          "role": "pdf",
+          "bytes": 326475,
+          "sha256": "1cf8b343127d3a0f1ff4c91b21eccb1cd6429478faf4076e6c254ad5f503bc58"
+        },
+        {
+          "path": "papers/berndt98-Radicals-and-units-in-Ramanujan-s-work/retypeset-2026/aa8725.tex",
+          "role": "tex",
+          "bytes": 34179,
+          "sha256": "ca81efa6f5e467de06a258d61d0bee2e2d52a8be94e715fa2284db12fdbfcf80"
+        },
+        {
+          "path": "papers/berndt98-Radicals-and-units-in-Ramanujan-s-work/retypeset-2026/CORRECTIONS.md",
+          "role": "corrections_log",
+          "bytes": 3345,
+          "sha256": "c36f17e5a0462f7d5e1ab4efced1221dc792f4228c58f72655d7df1cc9ff3135"
+        }
+      ]
+    },
+    {
+      "record_id": "jeffrey",
+      "title": "Simplifying square roots of square roots by denesting",
+      "asset_id": "retypeset-2026",
+      "version": "retypeset-2026",
+      "kind": "retypeset",
+      "status": "downloaded",
+      "retrieval": {
+        "method": "moved from docs/articles (repository content, not a network download)",
+        "retrieved_at": "2026-09-05T20:58:29+00:00"
+      },
+      "resolution": {},
+      "catalog_evidence_level": "editorial_retypesetting",
+      "note": "Corrected editorial re-typesetting (LaTeX source, compiled PDF, corrections log) prepared in September 2026 from the OCR of the original scan; not a facsimile of the published article. See RETYPESET_ARTICLES.md.",
+      "warnings": [],
+      "files": [
+        {
+          "path": "papers/jeffrey-Simplifying-square-roots-of-square-roots-by-denesting/retypeset-2026/CORRECTIONS.md",
+          "role": "corrections_log",
+          "bytes": 2626,
+          "sha256": "5d5b76f13b2f87adb6cab2e6cd7acd0c06bb4a594e402094266303935651f7af"
+        },
+        {
+          "path": "papers/jeffrey-Simplifying-square-roots-of-square-roots-by-denesting/retypeset-2026/denest.pdf",
+          "role": "pdf",
+          "bytes": 355088,
+          "sha256": "2ead299a47292a9692d1332d7dc2a3b8667f3b79a5ef08effaa1a30c6a181abb"
+        },
+        {
+          "path": "papers/jeffrey-Simplifying-square-roots-of-square-roots-by-denesting/retypeset-2026/denest.tex",
+          "role": "tex",
+          "bytes": 36036,
+          "sha256": "41b62c394af7260de7204516a9d47dce6446fa4b6eecc680512201e12c83b2a2"
+        }
+      ]
+    },
+    {
+      "record_id": "gkioulekas",
+      "title": "On the denesting of nested square roots",
+      "asset_id": "retypeset-2026",
+      "version": "retypeset-2026",
+      "kind": "retypeset",
+      "status": "downloaded",
+      "retrieval": {
+        "method": "moved from docs/articles (repository content, not a network download)",
+        "retrieved_at": "2026-09-05T20:58:29+00:00"
+      },
+      "resolution": {},
+      "catalog_evidence_level": "editorial_retypesetting",
+      "note": "Corrected editorial re-typesetting (LaTeX source, compiled PDF, corrections log) prepared in September 2026 from the OCR of the original scan; not a facsimile of the published article. See RETYPESET_ARTICLES.md.",
+      "warnings": [],
+      "files": [
+        {
+          "path": "papers/gkioulekas-On-the-denesting-of-nested-square-roots/retypeset-2026/CORRECTIONS.md",
+          "role": "corrections_log",
+          "bytes": 3216,
+          "sha256": "77c8a038e890523c5cbebaef569b1b31d4ab5e9fd7137706a57f25e53092d337"
+        },
+        {
+          "path": "papers/gkioulekas-On-the-denesting-of-nested-square-roots/retypeset-2026/gkioulekas2017.pdf",
+          "role": "pdf",
+          "bytes": 311761,
+          "sha256": "7d5743cdf5c64ca68d8aa8d0c8081a2a4c0e918ff4f9cfe188bb742b9bab5845"
+        },
+        {
+          "path": "papers/gkioulekas-On-the-denesting-of-nested-square-roots/retypeset-2026/gkioulekas2017.tex",
+          "role": "tex",
+          "bytes": 35001,
+          "sha256": "0418a18edacf52ae43b14aa97258d25b8def7b8b6773ccd5d7f4d11bed6b034b"
+        }
+      ]
+    },
+    {
+      "record_id": "landau92",
+      "title": "Simplification of nested radicals",
+      "asset_id": "retypeset-2026",
+      "version": "retypeset-2026",
+      "kind": "retypeset",
+      "status": "downloaded",
+      "retrieval": {
+        "method": "moved from docs/articles (repository content, not a network download)",
+        "retrieved_at": "2026-09-05T20:58:29+00:00"
+      },
+      "resolution": {},
+      "catalog_evidence_level": "editorial_retypesetting",
+      "note": "Corrected editorial re-typesetting (LaTeX source, compiled PDF, corrections log) prepared in September 2026 from the OCR of the original scan; not a facsimile of the published article. See RETYPESET_ARTICLES.md. This is the FOCS 1989 extended abstract, not the SIAM J. Comput. 1992 article.",
+      "warnings": [],
+      "files": [
+        {
+          "path": "papers/landau92-Simplification-of-nested-radicals/retypeset-2026/CORRECTIONS.md",
+          "role": "corrections_log",
+          "bytes": 3013,
+          "sha256": "800955ccdecdd9ae69533769953ab492cabd4bcc7eeb468da0c34b0e6372581b"
+        },
+        {
+          "path": "papers/landau92-Simplification-of-nested-radicals/retypeset-2026/landau1989.pdf",
+          "role": "pdf",
+          "bytes": 381003,
+          "sha256": "ffd86bc399f932409e227aa04c54f37efd879eb49eadd0ec7b4d65f505225ed9"
+        },
+        {
+          "path": "papers/landau92-Simplification-of-nested-radicals/retypeset-2026/landau1989.tex",
+          "role": "tex",
+          "bytes": 35096,
+          "sha256": "3b9274500acb6b18e4edb7e385df76ceda5606705dc7ad75ceb2423f9ea057b6"
+        }
+      ]
+    },
+    {
+      "record_id": "bfht",
+      "title": "Decreasing the nesting depth of expressions involving square roots",
+      "asset_id": "retypeset-2026",
+      "version": "retypeset-2026",
+      "kind": "retypeset",
+      "status": "downloaded",
+      "retrieval": {
+        "method": "moved from docs/articles (repository content, not a network download)",
+        "retrieved_at": "2026-09-05T20:58:29+00:00"
+      },
+      "resolution": {},
+      "catalog_evidence_level": "editorial_retypesetting",
+      "note": "Corrected editorial re-typesetting (LaTeX source, compiled PDF, corrections log) prepared in September 2026 from the OCR of the original scan; not a facsimile of the published article. See RETYPESET_ARTICLES.md.",
+      "warnings": [],
+      "files": [
+        {
+          "path": "papers/bfht-Decreasing-the-nesting-depth-of-expressions-involving-square-root/retypeset-2026/CORRECTIONS.md",
+          "role": "corrections_log",
+          "bytes": 5878,
+          "sha256": "c065da7394d6bca08fad44855c8799f21d7abe9fc7e5689170deb8443ef46612"
+        },
+        {
+          "path": "papers/bfht-Decreasing-the-nesting-depth-of-expressions-involving-square-root/retypeset-2026/symb85.pdf",
+          "role": "pdf",
+          "bytes": 504277,
+          "sha256": "834d1f0a2291d33b983d8b6d17ce1d9c25b5ac7db5954589df6bdd5bab12f603"
+        },
+        {
+          "path": "papers/bfht-Decreasing-the-nesting-depth-of-expressions-involving-square-root/retypeset-2026/symb85.tex",
+          "role": "tex",
+          "bytes": 64804,
+          "sha256": "746cbc0f9f0dd182908f0f5ee4b5fb804a69241d41034e33efcf584824af9a28"
+        }
+      ]
+    },
+    {
+      "record_id": "scheinerman",
+      "title": "When Close Enough Is Close Enough",
+      "asset_id": "retypeset-2026",
+      "version": "retypeset-2026",
+      "kind": "retypeset",
+      "status": "downloaded",
+      "retrieval": {
+        "method": "moved from docs/articles (repository content, not a network download)",
+        "retrieved_at": "2026-09-05T20:58:29+00:00"
+      },
+      "resolution": {},
+      "catalog_evidence_level": "editorial_retypesetting",
+      "note": "Corrected editorial re-typesetting (LaTeX source, compiled PDF, corrections log) prepared in September 2026 from the OCR of the original scan; not a facsimile of the published article. See RETYPESET_ARTICLES.md. The work is not cited in the three reports; no catalog record exists.",
+      "warnings": [],
+      "files": [
+        {
+          "path": "papers/scheinerman-When-Close-Enough-Is-Close-Enough/retypeset-2026/CORRECTIONS.md",
+          "role": "corrections_log",
+          "bytes": 3667,
+          "sha256": "eabc0842805f5a4eebed7a5a752d576b45e8479faa8ec3f72097d546a224231b"
+        },
+        {
+          "path": "papers/scheinerman-When-Close-Enough-Is-Close-Enough/retypeset-2026/scheinerman2000.pdf",
+          "role": "pdf",
+          "bytes": 400792,
+          "sha256": "ead4def1baaa1378c4142860fc7d11f7a4dfc949157082cd26c276371d2a9708"
+        },
+        {
+          "path": "papers/scheinerman-When-Close-Enough-Is-Close-Enough/retypeset-2026/scheinerman2000.tex",
+          "role": "tex",
+          "bytes": 37417,
+          "sha256": "a43a0715c1dd4919874061a43c221616ce8d73fe42dd5f3b5ce00b6762667c65"
+        },
+        {
+          "path": "papers/scheinerman-When-Close-Enough-Is-Close-Enough/retypeset-2026/verify_intervals.py",
+          "role": "verification_script",
+          "bytes": 3524,
+          "sha256": "be6ad1d4032c1f4bdc00f91d1702a29c83ce0a2c5c754a9f10a59b141b44b232"
+        }
+      ]
+    },
+    {
+      "record_id": "wikipedia",
+      "title": "Nested radical",
+      "asset_id": "snapshot-pdf-2026",
+      "version": "snapshot-pdf-2026",
+      "kind": "web",
+      "status": "downloaded",
+      "retrieval": {
+        "method": "moved from docs/articles/Wikipedia (repository content)",
+        "retrieved_at": "2026-09-05T20:58:29+00:00"
+      },
+      "resolution": {},
+      "catalog_evidence_level": "cited_web_resource",
+      "note": "PDF print and plain-text extract of the Wikipedia article \"Nested radical\".",
+      "warnings": [],
+      "files": [
+        {
+          "path": "web_resources/wikipedia-Nested-radical/snapshot-pdf-2026/Nested_radical.pdf",
+          "role": "pdf",
+          "bytes": 710735,
+          "sha256": "f92e32fba8e1277f8d54bc7e5c040b50727a0f800c4cd11bf72b43589421adf5"
+        },
+        {
+          "path": "web_resources/wikipedia-Nested-radical/snapshot-pdf-2026/Nested_radical.txt",
+          "role": "text",
+          "bytes": 22523,
+          "sha256": "3837f7cb8779a555e367047727c8b7be614233f30235800994138651c803b09b"
+        }
+      ]
     }
   ],
   "skipped": [],
   "limitations": "Success means response-format validation, not scholarly identity validation or proof of exhaustive coverage. Failed and unlocated items remain unresolved.",
-  "updated": "2026-09-05T20:38:37+00:00"
+  "updated": "2026-09-05T20:58:29+00:00"
 }

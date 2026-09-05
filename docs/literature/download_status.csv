@@ -120,3 +120,10 @@ infiniteblogs,resource-01,web,web-resources,failed,RuntimeError: https://www.can
 infiniteblogs,resource-02,web,web-resources,failed,RuntimeError: https://medium.com/@ArchieGSmith/calculus-of-infinite-nested-radicals-1ab3e1d26774: RuntimeError: Could not retrieve https://medium.com/@ArchieGSmith/calculus-of-infinite-nested-radicals-1ab3e1d26774: HTTP Error 403: Forbidden
 infiniteblogs,resource-03,web,web-resources,failed,RuntimeError: https://math.stackexchange.com/questions/4049946/the-infinitely-nested-radicals-problem-and-ramanujans-wondrous-formula: RuntimeError: Could not retrieve https://math.stackexchange.com/questions/4049946/the-infinitely-nested-radicals-problem-and-ramanujans-wondrous-formula: HTTP Error 403: Forbidden
 fateman72,pdf,pdf,mit-lcs-tr-095-archive-org,downloaded,
+berndt98,retypeset-2026,retypeset,retypeset-2026,downloaded,
+jeffrey,retypeset-2026,retypeset,retypeset-2026,downloaded,
+gkioulekas,retypeset-2026,retypeset,retypeset-2026,downloaded,
+landau92,retypeset-2026,retypeset,retypeset-2026,downloaded,
+bfht,retypeset-2026,retypeset,retypeset-2026,downloaded,
+scheinerman,retypeset-2026,retypeset,retypeset-2026,downloaded,
+wikipedia,snapshot-pdf-2026,web,snapshot-pdf-2026,downloaded,

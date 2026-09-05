@@ -1,4 +1,9 @@
-# Corrected re-typesettings of the six supplied articles
+# Corrected re-typesettings of six articles
+
+Moved from `docs/articles/` into the literature dataset on 5 September 2026. Each article now lives in
+`papers/<record>/retypeset-2026/` (Berndt-Chan-Zhang under `berndt98`, Jeffrey-Rich under `jeffrey`,
+Gkioulekas under `gkioulekas`, Landau 1989 under `landau92`, Scheinerman under `scheinerman`, Borodin et al. under `bfht`);
+the directory names below refer to the file basenames.
 
 The six subdirectories correspond one-to-one to the PDF/Mathpix-LaTeX pairs
 in the supplied `articles.zip`. Each contains a self-contained `.tex` source,
