@@ -1,0 +1,318 @@
+{
+  "scope": "Independent algebra and source-rule checks; no Wolfram package execution",
+  "python": "3.13.5",
+  "sympy": "1.14.0",
+  "mpmath": "1.3.0",
+  "source_sha256": "693a2825f1e2b8912e55371b90dc8ed115bc33ee707dd3a4521eb22bcd2ccc93",
+  "checks_passed": 45,
+  "checks": [
+    {
+      "name": "direct square identity",
+      "kind": "exact",
+      "passed": true,
+      "detail": "(1 + sqrt(2))**2"
+    },
+    {
+      "name": "direct minimal polynomial",
+      "kind": "exact",
+      "passed": true,
+      "detail": "X**2 - 2*X - 1"
+    },
+    {
+      "name": "direct polynomial gcd",
+      "kind": "exact",
+      "passed": true,
+      "detail": "X - sqrt(2) - 1"
+    },
+    {
+      "name": "multiplier example square",
+      "kind": "exact",
+      "passed": true,
+      "detail": "sqrt(2) + sqrt(3)"
+    },
+    {
+      "name": "unmultiplied degree four",
+      "kind": "exact",
+      "passed": true,
+      "detail": "X**4 - 10*X**2 + 1"
+    },
+    {
+      "name": "unmultiplied gcd degree two",
+      "kind": "exact",
+      "passed": true,
+      "detail": "X**2 - 5 - 2*sqrt(6)"
+    },
+    {
+      "name": "multiplier two square",
+      "kind": "exact",
+      "passed": true,
+      "detail": "2 + sqrt(6)"
+    },
+    {
+      "name": "multiplied minimal polynomial",
+      "kind": "exact",
+      "passed": true,
+      "detail": "X**2 - 4*X - 2"
+    },
+    {
+      "name": "multiplied gcd linear",
+      "kind": "exact",
+      "passed": true,
+      "detail": "X - sqrt(6) - 2"
+    },
+    {
+      "name": "multiplier recovery",
+      "kind": "exact",
+      "passed": true,
+      "detail": "sqrt(2)*(2 + sqrt(6))/2"
+    },
+    {
+      "name": "unmultiplied discriminant",
+      "kind": "exact",
+      "passed": true,
+      "detail": "{2: 14, 3: 2}"
+    },
+    {
+      "name": "negative target and reconstructed root have equal squares",
+      "kind": "exact",
+      "passed": true,
+      "detail": "(-sqrt(2) - 1)**2"
+    },
+    {
+      "name": "negative target and reconstructed root are different",
+      "kind": "exact",
+      "passed": true,
+      "detail": "2 + 2*sqrt(2)"
+    },
+    {
+      "name": "first principal square-root factor",
+      "kind": "exact",
+      "passed": true,
+      "detail": "1 + sqrt(2)*I"
+    },
+    {
+      "name": "second principal square-root factor",
+      "kind": "exact",
+      "passed": true,
+      "detail": "1 + sqrt(3)*I"
+    },
+    {
+      "name": "complex product square",
+      "kind": "exact",
+      "passed": true,
+      "detail": "-4*sqrt(6) + 2 - 4*sqrt(2)*I - 2*sqrt(3)*I"
+    },
+    {
+      "name": "complex branch negative real part",
+      "kind": "exact",
+      "passed": true,
+      "detail": "1 - sqrt(6)"
+    },
+    {
+      "name": "complex reconstructed branch positive real part",
+      "kind": "exact",
+      "passed": true,
+      "detail": "-1 + sqrt(6)"
+    },
+    {
+      "name": "complex branch minimal polynomial",
+      "kind": "exact",
+      "passed": true,
+      "detail": "X**4 + 4*X**3 + 4*X**2 + 48*X + 144"
+    },
+    {
+      "name": "complex branch gcd",
+      "kind": "exact",
+      "passed": true,
+      "detail": "X - sqrt(6) + 1 + sqrt(2)*I + sqrt(3)*I"
+    },
+    {
+      "name": "complex branch wrong-target separation",
+      "kind": "exact",
+      "passed": true,
+      "detail": "-2 + 2*sqrt(6) - 2*sqrt(3)*I - 2*sqrt(2)*I"
+    },
+    {
+      "name": "nested-power counterexample",
+      "kind": "exact",
+      "passed": true,
+      "detail": "sqrt((-2)^2)=2 != -2"
+    },
+    {
+      "name": "factored-root counterexample",
+      "kind": "exact",
+      "passed": true,
+      "detail": "sqrt(2) != -sqrt(2)"
+    },
+    {
+      "name": "rationalizer remainder for 1 + sqrt(2)",
+      "kind": "exact",
+      "passed": true,
+      "detail": "0"
+    },
+    {
+      "name": "rationalizer inverse for 1 + sqrt(2)",
+      "kind": "exact",
+      "passed": true,
+      "detail": "-1 + sqrt(2)"
+    },
+    {
+      "name": "rationalizer remainder for 1 + I",
+      "kind": "exact",
+      "passed": true,
+      "detail": "0"
+    },
+    {
+      "name": "rationalizer inverse for 1 + I",
+      "kind": "exact",
+      "passed": true,
+      "detail": "1/2 - I/2"
+    },
+    {
+      "name": "rationalizer remainder for 2/3",
+      "kind": "exact",
+      "passed": true,
+      "detail": "0"
+    },
+    {
+      "name": "rationalizer inverse for 2/3",
+      "kind": "exact",
+      "passed": true,
+      "detail": "3/2"
+    },
+    {
+      "name": "rationalizer remainder for sqrt(3) + 2",
+      "kind": "exact",
+      "passed": true,
+      "detail": "0"
+    },
+    {
+      "name": "rationalizer inverse for sqrt(3) + 2",
+      "kind": "exact",
+      "passed": true,
+      "detail": "2 - sqrt(3)"
+    },
+    {
+      "name": "rationalizer remainder for sqrt(2) + sqrt(3)",
+      "kind": "exact",
+      "passed": true,
+      "detail": "0"
+    },
+    {
+      "name": "rationalizer inverse for sqrt(2) + sqrt(3)",
+      "kind": "exact",
+      "passed": true,
+      "detail": "-sqrt(2) + sqrt(3)"
+    },
+    {
+      "name": "generator discriminant example",
+      "kind": "exact",
+      "passed": true,
+      "detail": "disc(X^2-18)=72=8*3^2"
+    },
+    {
+      "name": "degree gcd does not determine product degree",
+      "kind": "exact",
+      "passed": true,
+      "detail": "X**6 - 72"
+    },
+    {
+      "name": "comparator ignores second pair",
+      "kind": "source-semantics model",
+      "passed": true,
+      "detail": "both comparisons are 2 <= 1, hence False"
+    },
+    {
+      "name": "comparator does not order the primes",
+      "kind": "source-semantics model",
+      "passed": true,
+      "detail": "False in both directions"
+    },
+    {
+      "name": "candidate count r=2",
+      "kind": "exact counting",
+      "passed": true,
+      "detail": "t=10; r^t-1=1023"
+    },
+    {
+      "name": "candidate count r=3",
+      "kind": "exact counting",
+      "passed": true,
+      "detail": "t=7; r^t-1=2186"
+    },
+    {
+      "name": "candidate count r=4",
+      "kind": "exact counting",
+      "passed": true,
+      "detail": "t=5; r^t-1=1023"
+    },
+    {
+      "name": "candidate count r=5",
+      "kind": "exact counting",
+      "passed": true,
+      "detail": "t=5; r^t-1=3124"
+    },
+    {
+      "name": "candidate count r=6",
+      "kind": "exact counting",
+      "passed": true,
+      "detail": "t=5; r^t-1=7775"
+    },
+    {
+      "name": "candidate count r=10",
+      "kind": "exact counting",
+      "passed": true,
+      "detail": "t=5; r^t-1=99999"
+    },
+    {
+      "name": "candidate count r=100",
+      "kind": "exact counting",
+      "passed": true,
+      "detail": "t=5; r^t-1=9999999999"
+    },
+    {
+      "name": "root-of-unity branch-recovery sanity checks",
+      "kind": "high-precision numerical sanity check",
+      "passed": true,
+      "detail": "21 cases; maximum nearest-candidate error 1.0977067e-90"
+    }
+  ],
+  "candidate_counts": [
+    {
+      "r": 2,
+      "selected_primes_assuming_available": 10,
+      "divisor_candidates_excluding_one": 1023
+    },
+    {
+      "r": 3,
+      "selected_primes_assuming_available": 7,
+      "divisor_candidates_excluding_one": 2186
+    },
+    {
+      "r": 4,
+      "selected_primes_assuming_available": 5,
+      "divisor_candidates_excluding_one": 1023
+    },
+    {
+      "r": 5,
+      "selected_primes_assuming_available": 5,
+      "divisor_candidates_excluding_one": 3124
+    },
+    {
+      "r": 6,
+      "selected_primes_assuming_available": 5,
+      "divisor_candidates_excluding_one": 7775
+    },
+    {
+      "r": 10,
+      "selected_primes_assuming_available": 5,
+      "divisor_candidates_excluding_one": 99999
+    },
+    {
+      "r": 100,
+      "selected_primes_assuming_available": 5,
+      "divisor_candidates_excluding_one": 9999999999
+    }
+  ],
+  "wolfram_kernel_executed": false
+}

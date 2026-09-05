@@ -1,0 +1,166 @@
+{
+  "scope": "Independent mathematics and small source-invariant models; not Wolfram execution",
+  "python": "3.13.5",
+  "sympy": "1.14.0",
+  "source_sha256": "693a2825f1e2b8912e55371b90dc8ed115bc33ee707dd3a4521eb22bcd2ccc93",
+  "passed": 26,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "classical square-root denesting identity",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "classical minimal polynomial",
+      "passed": true,
+      "detail": "x**4 - 10*x**2 + 1"
+    },
+    {
+      "name": "classical discriminant",
+      "passed": true,
+      "detail": "{2: 14, 3: 2}"
+    },
+    {
+      "name": "unscaled GCD retains degree two",
+      "passed": true,
+      "detail": "x**2 - 5 - 2*sqrt(6)"
+    },
+    {
+      "name": "multiplier sqrt(6): rational minimal-polynomial degree",
+      "passed": true,
+      "detail": "x**4 - 24*x**2 - 6"
+    },
+    {
+      "name": "multiplier 2: rational minimal-polynomial degree",
+      "passed": true,
+      "detail": "x**2 - 4*x - 2"
+    },
+    {
+      "name": "multiplier 3: rational minimal-polynomial degree",
+      "passed": true,
+      "detail": "x**2 - 6*x + 3"
+    },
+    {
+      "name": "multiplier sqrt(5): rational minimal-polynomial degree",
+      "passed": true,
+      "detail": "x**8 - 490*x**4 + 25"
+    },
+    {
+      "name": "multiplier two produces linear GCD",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "negative target and principal reconstruction disagree",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "complex base is square of its right-half-plane square root",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "three-halves power has left-half-plane value",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "three-halves target square",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "wrong-branch minimal polynomial",
+      "passed": true,
+      "detail": "x**2 - 10*x + 27"
+    },
+    {
+      "name": "wrong-branch polynomial GCD is linear",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "merged-product wrong-branch polynomial",
+      "passed": true,
+      "detail": "x**4 + 4*x**3 + 4*x**2 + 48*x + 144"
+    },
+    {
+      "name": "merged-product wrong-branch GCD is linear",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "unrestricted square-root splitting changes a sign",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "minimal-polynomial reciprocal identity for sqrt(2) + sqrt(3)",
+      "passed": true,
+      "detail": "-sqrt(2) + sqrt(3)"
+    },
+    {
+      "name": "minimal-polynomial reciprocal identity for 1 + sqrt(2)*I",
+      "passed": true,
+      "detail": "1/3 - sqrt(2)*I/3"
+    },
+    {
+      "name": "minimal-polynomial reciprocal identity for 2/3",
+      "passed": true,
+      "detail": "3/2"
+    },
+    {
+      "name": "faulty comparator ignores the second operand",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "distinct increasing prime records can compare false both ways",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "prime gap fixture uses actual primes",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "trimming upper bound exceeds shortened list",
+      "passed": true,
+      "detail": "{'before': [2, 3, 5, 7, 11, 0], 'clean': [2, 3, 5, 7, 11], 'requested_last_index': 6}"
+    },
+    {
+      "name": "nominal cap is not a cap",
+      "passed": true,
+      "detail": "{2: 1023, 3: 2186, 10: 99999, 100: 9999999999}"
+    }
+  ],
+  "multiplier_examples": [
+    {
+      "multiplier": "sqrt(6)",
+      "polynomial": "x**4 - 24*x**2 - 6",
+      "degree": 4,
+      "gcd": "x**2 - 5*sqrt(6) - 12"
+    },
+    {
+      "multiplier": "2",
+      "polynomial": "x**2 - 4*x - 2",
+      "degree": 2,
+      "gcd": "x - sqrt(6) - 2"
+    },
+    {
+      "multiplier": "3",
+      "polynomial": "x**2 - 6*x + 3",
+      "degree": 2,
+      "gcd": "x - 3 - sqrt(6)"
+    },
+    {
+      "multiplier": "sqrt(5)",
+      "polynomial": "x**8 - 490*x**4 + 25",
+      "degree": 8,
+      "gcd": "x**2 - 5*sqrt(5) - 2*sqrt(30)"
+    }
+  ]
+}
