@@ -1,0 +1,28 @@
+{
+  "record_id": "gkioulekas",
+  "title": "On the denesting of nested square roots",
+  "asset_id": "pdf-published-2017",
+  "version": "published-2017",
+  "kind": "pdf",
+  "status": "downloaded",
+  "retrieval": {
+    "requested_url": "file:docs/articles/gkioulekas2017.pdf",
+    "resolved_url": "file:docs/articles/gkioulekas2017.pdf",
+    "retrieved_at": "2026-09-05T20:38:37+00:00",
+    "method": "manual download registered by register_manual_file.py",
+    "bytes": 347404,
+    "sha256": "ff026ff7313dfccf522209baf49bbf346257ad9ee8a44442e33558713c6377e0"
+  },
+  "resolution": {},
+  "catalog_evidence_level": "manual_download",
+  "note": "Published 2017 version supplied by the repository owner; the downloader retrieved the author-submitted version separately.",
+  "warnings": [],
+  "files": [
+    {
+      "path": "papers/gkioulekas-On-the-denesting-of-nested-square-roots/published-2017/pdf-published-2017.pdf",
+      "role": "pdf",
+      "bytes": 347404,
+      "sha256": "ff026ff7313dfccf522209baf49bbf346257ad9ee8a44442e33558713c6377e0"
+    }
+  ]
+}
