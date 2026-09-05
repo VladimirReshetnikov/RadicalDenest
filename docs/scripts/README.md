@@ -54,7 +54,7 @@ file into the record's version folder and updates the manifest with its
 SHA-256 and origin: the Internet Archive scan of Fateman's MIT-LCS-TR-095 (a
 different scan from the CSAIL copy). The re-typeset articles under
 `docs/articles/*/` (Landau 1989, Gkioulekas 2017, and others) are kept there
-only, not duplicated in the dataset. Final tally: 95 assets, 49 PDFs, 44 TeX
+only, not duplicated in the dataset. Final tally: 95 assets, 47 PDFs, 43 TeX
 files, 64 works.
 
 ## How the files were obtained
