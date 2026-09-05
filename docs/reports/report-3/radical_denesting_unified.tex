@@ -1,36 +1,63 @@
-\documentclass[11pt,letterpaper]{article}
+\documentclass[11pt,oneside]{article}
+
+\usepackage[a4paper,margin=27mm,headheight=15pt]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{amsmath,amsthm,mathtools}
-\usepackage{newpxtext,newpxmath}
-\usepackage[margin=1in,headheight=15pt]{geometry}
+\IfFileExists{libertinus.sty}{\usepackage{libertinus}}{\usepackage{lmodern}}
 \usepackage{microtype}
-\usepackage{booktabs,longtable,array,enumitem}
-\usepackage[dvipsnames]{xcolor}
-\usepackage{fancyhdr,titlesec}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{bm}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
 \usepackage{listings}
 \usepackage{xurl}
-\usepackage[colorlinks=true,linkcolor=MidnightBlue,citecolor=MidnightBlue,urlcolor=MidnightBlue,breaklinks=true]{hyperref}
+\usepackage{ragged2e,needspace}
+\usepackage{hyperref}
 \usepackage{bookmark}
+\usepackage[nameinlink,noabbrev]{cleveref}
 \usepackage{etoolbox}
 \patchcmd{\thebibliography}{\section*{\refname}}{}{}{\PackageError{denesting}{Bibliography heading patch failed}{Use a standard article class.}}
-\hypersetup{pdftitle={Radical Denesting: A Unified Research Guide},pdfauthor={Unified synthesis of four supplied reports},pdfsubject={Classical identities, general algorithms, computational complexity, and computer algebra}}
-\definecolor{ruleblue}{RGB}{35,67,91}
-\titleformat{\section}{\Large\bfseries\color{ruleblue}}{\thesection}{0.7em}{}
-\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.7em}{}
-\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.7em}{}
+
+\definecolor{linkblue}{RGB}{25,75,135}
+\definecolor{shadegray}{RGB}{246,247,249}
+\definecolor{rulegray}{RGB}{195,201,208}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=linkblue,
+  citecolor=linkblue,
+  urlcolor=linkblue,
+  pdftitle={Radical Denesting: A Unified Research Guide},
+  pdfauthor={Unified synthesis of four supplied reports and two parallel unified reports},
+  pdfsubject={Classical identities, general algorithms, computational complexity, and computer algebra},
+  pdfkeywords={nested radicals, denesting, Galois theory, computer algebra, Ramanujan, Landau, Honsbeek}
+}
+
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small Radical Denesting}
-\fancyhead[R]{\small Unified Research Guide}
+\fancyhead[L]{\small Radical denesting synthesis}
+\fancyhead[R]{\small\nouppercase{\leftmark}}
 \fancyfoot[C]{\thepage}
-\renewcommand{\headrulewidth}{0.3pt}
-\setlength{\parindent}{1.15em}
-\setlength{\parskip}{3pt}
-\setlength{\emergencystretch}{2em}
-\setcounter{tocdepth}{2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.7em}{}
 \setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+\setlist[itemize]{leftmargin=2em,itemsep=0.25em,topsep=0.4em}
+\setlist[enumerate]{leftmargin=2.3em,itemsep=0.25em,topsep=0.4em}
+
+% Long unbreakable inline mathematics occasionally leaves a line with no legal
+% break point.  A small emergency stretch lets TeX loosen such a line rather
+% than let it protrude into the margin; it applies only to lines that would
+% otherwise be overfull.
+\setlength{\emergencystretch}{2em}
 \numberwithin{equation}{section}
+
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -40,6 +67,7 @@
 \newtheorem{example}[theorem]{Example}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
+
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
@@ -52,40 +80,56 @@
 \newcommand{\doi}[1]{\href{https://doi.org/#1}{\nolinkurl{doi:#1}}}
 \newcommand{\status}[1]{\textsf{\small[#1]}}
 \newcommand{\entrynote}[1]{\par\smallskip\noindent\emph{Relevance and scope.} #1}
-\lstset{basicstyle=\ttfamily\small,columns=fullflexible,keepspaces=true,breaklines=true,frame=single,rulecolor=\color{black!20},showstringspaces=false,tabsize=4,aboveskip=10pt,belowskip=10pt}
+
+\newenvironment{boxedremark}{%
+  \par\smallskip\noindent\begin{center}\begin{minipage}{0.94\textwidth}%
+  \color{black}\hrule\vspace{0.6em}\small
+}{%
+  \vspace{0.6em}\hrule\end{minipage}\end{center}\smallskip
+}
+
+\lstdefinestyle{pseudo}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{shadegray},
+  frame=single,
+  rulecolor=\color{rulegray},
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  xleftmargin=0.7em,
+  xrightmargin=0.7em,
+  aboveskip=0.8em,
+  belowskip=0.8em
+}
+\lstset{style=pseudo}
+
+\title{\bfseries Radical Denesting: A Unified Research Guide\\[0.35em]
+\large Classical identities, field-theoretic algorithms, computational complexity,\\
+\large and computer-algebra practice}
+\author{Deduplicated synthesis of the supplied radical-denesting research reports\\
+\small Vladimir Reshetnikov's \texttt{RadicalDenest} repository}
+\date{Research cutoff: 5 September 2026\\
+\small Second-level merge of the three unified reports: 5 September 2026}
+
 \begin{document}
-\begin{titlepage}
-\thispagestyle{empty}
-\vspace*{0.5in}
-{\small\sffamily\bfseries\color{ruleblue} LITERATURE SYNTHESIS \quad / \quad SYMBOLIC COMPUTATION}\par
-\vspace{0.45in}
-{\Huge\bfseries Radical Denesting\par}
-\vspace{0.14in}
-{\LARGE A Unified Research Guide\par}
-\vspace{0.3in}
-{\large Classical identities, field-theoretic algorithms,\par computational complexity, and computer-algebra practice\par}
-\vspace{0.4in}
-\noindent\textcolor{ruleblue}{\rule{\textwidth}{1pt}}
-\vspace{0.16in}
-\noindent\textbf{Scope.} A deduplicated and critically reconciled synthesis of the four reports supplied in \texttt{reports.zip}, supplemented by primary literature, author manuscripts, official software documentation, and exact computations.\par
-\vspace{0.15in}
-\noindent\textbf{Research cutoff.} September 5, 2026.\par
-\vspace{0.15in}
-\noindent\textbf{Reading convention.} A result about a restricted radical shape is not presented as a general denesting algorithm. An algebraic-number normal form is not called a minimum-depth radical expression. Real and complex branches are distinguished throughout.\par
-\vfill
-\noindent\textbf{Companion materials}\par
-\noindent Self-contained LaTeX source; compiled PDF; exact-check Python script and execution transcript; source-report inventory and deduplicated link register.\par
-\vspace{0.3in}
-{\small This report is an evidence-checked synthesis, not a claim of an exhaustive bibliography or an independent verification of every theorem cited. Source-access limitations and corrections are recorded explicitly.}
-\end{titlepage}
+\maketitle
 
 \begin{abstract}
-Radical denesting asks whether an algebraic expression can be represented with fewer layers of root extraction. Its literature runs from classical binomial surds and Ramanujan's identities to Galois-theoretic decision procedures, algorithms for restricted real radical extensions, and practical simplifiers in computer-algebra systems. This report merges four supplied research reports, removes repeated descriptions and duplicate publication records, corrects mathematical and bibliographic errors, and supplies a structured guide to the resulting literature.
+Radical denesting asks whether an algebraic expression can be represented with fewer layers of root extraction. Its literature runs from classical binomial surds and Ramanujan's identities to Galois-theoretic decision procedures, algorithms for restricted real radical extensions, and practical simplifiers in computer-algebra systems. This report merges four supplied research reports, and in its present edition also two parallel unified syntheses of the same corpus, removes repeated descriptions and duplicate publication records, corrects mathematical and bibliographic errors, and supplies a structured guide to the resulting literature.
 
 The central distinction is between \emph{existence}, \emph{construction}, \emph{minimum depth}, \emph{algebraic equality}, and \emph{efficient implementation}. Precise proofs are given for direct quadratic denesting, a restricted cubic-in-quadratic criterion, several benchmark identities, and the classical convergence criterion for infinite square-root nests. The more general results of Borodin--Fagin--Hopcroft--Tompa, Zippel, Landau, Bl\"omer, Horng--Huang, Cotner, and Honsbeek are placed in their appropriate field and complexity models. Later work through 2026 and the documented capabilities of SymPy, Maxima, Wolfram Language, Maple, SageMath, and PARI/GP are assessed without treating heuristics as completeness theorems. An annotated bibliography, reading paths, reproducible checks, and a correction ledger make the survey useful both as a research starting point and as an implementation reference.
 \end{abstract}
+
+\begin{boxedremark}\textbf{Scope and reading convention.}\space
+A deduplicated and critically reconciled synthesis of the four reports supplied in \texttt{reports.zip}, supplemented by primary literature, author manuscripts, official software documentation, and exact computations. This edition also absorbs the two parallel unified reports that were prepared independently from the same corpus (formerly \texttt{docs/reports/report-1} and \texttt{report-2}): their overlapping exposition has been consolidated into this text and their unique material, bibliography entries, and verification checks have been retained. A result about a restricted radical shape is not presented as a general denesting algorithm. An algebraic-number normal form is not called a minimum-depth radical expression. Real and complex branches are distinguished throughout.
+
+\smallskip\noindent\textbf{Companion materials.} Self-contained LaTeX source; compiled PDF; a merged exact-check Python script with its execution transcript and JSON record; source-report inventory and deduplicated link register. This report is an evidence-checked synthesis, not a claim of an exhaustive bibliography or an independent verification of every theorem cited. Source-access limitations and corrections are recorded explicitly.
+\end{boxedremark}
+
 \tableofcontents
-\clearpage
+\newpage
 
 \section{Purpose, evidence, and the unified view}\label{sec:scope}
 
@@ -95,6 +139,11 @@ The supplied archive contains four distinct intellectual reports, attributed in 
 All four reports share the same backbone: elementary square-root formulas; Ramanujan; the 1976--2000 algorithmic literature; selected later papers; and computer-algebra implementations. Their useful differences are retained. The broadest historical and software inventories have been combined with the more precise thesis references, complexity distinctions, and higher-index examples. Repetition has been removed at the level of both exposition and bibliographic identity. Conference papers and expanded journal versions are grouped, while genuinely distinct papers by the same author remain distinct.
 
 The original reports are treated as \emph{research leads}, not as authorities for mathematical statements. Primary papers, author copies, institutional records, publisher abstracts, and official documentation take precedence. This matters because agreement between AI reports can merely reproduce the same erroneous secondary statement. The substantive corrections are collected in Section~\ref{sec:corrections}; unresolved peripheral leads are retained separately rather than silently promoted to verified references.
+
+\subsection{The second-level merge}
+Three unified reports were prepared independently from the same four-report corpus: a 29-page \emph{Unified Literature and Implementation Report} with 93 bibliography entries, a 39-page \emph{Unified Research Report} with 99 entries, and the present 45-page \emph{Unified Research Guide} with 86 entries. They agree on the architecture of the subject, on every substantive correction (the multiquadratic field of $\sqrt2+\sqrt3$, the local scope of the fourth-root theorem, the Honsbeek ratio criterion, the cubic-in-quadratic rational-root condition, the rejected integer-factorization equivalence, Herschfeld's criterion, the meaning of SymPy's \texttt{max\_iter}, Elia's authorship, Bumby's year), and on the same proofs of the direct quadratic theorem and of the trace--norm cubic criterion. The present guide was chosen as the base because it carries the most complete proofs and the explicit correction ledger.
+
+What the other two reports contributed uniquely has been folded in at the appropriate place rather than appended: the radical filtration and the derived-length warning with $\sqrt[3]2$ (Section~\ref{sec:definitions} and Section~\ref{sec:fields}); the recursive $\sqrt{X+Y}$ identity, the multiquadratic regression identity, and the relative-denesting caveat (Section~\ref{sec:quadratic}); the Cardan--Dickson polynomials $D_n$ with the fifth-root data, a second cubic-in-quadratic non-example, and the identity $\sqrt[3]{2+\sqrt5}-\sqrt[3]{\sqrt5-2}=1$ (Sections~\ref{sec:ramanujan}, \ref{sec:highercriteria} and \ref{sec:complexity}); the four size parameters of complexity statements and the comparison table of the classical algorithms (Sections~\ref{sec:classical} and \ref{sec:fields}); Honsbeek's metabelian warning and the resolvent/subfield viewpoint (Section~\ref{sec:fields}); SymPy's real $n$th-root routine \texttt{nthroot} with executed examples, Maple's documented normalization pipeline, and the Derive, Magma and FriCAS rows of the capability map (Section~\ref{sec:cas}); a lexicographic cost function and audit-trail recommendation (Section~\ref{sec:directions}); and fifteen bibliography entries. The three verification scripts were merged into one, so that the 210-case sweep of the cubic criterion and the recorded SymPy observations of the other reports are reproduced alongside the exact checks of this guide (Section~\ref{sec:verification}).
 
 \subsection{The conclusions that survive reconciliation}
 There is no single unqualified question called ``the denesting problem.'' Over a specified base field and with specified root and branch conventions, general computability and structural results exist. The classical work of Landau and subsequent refinements must not be reduced to ``higher radicals are unsolved,'' but neither should their guarantees be described as a fast, universally implemented minimum-depth simplifier over the reals. Roots of unity and the representation of the splitting field are material parts of the statements \cite{landau,hornghuang,cotner,honsbeek}.
@@ -130,6 +179,17 @@ Thus $\sqrt2+\sqrt3$ has depth one although constructing its field by successive
 
 The base field is part of the problem. Declaring an algebraic constant to lie in $K$ makes its depth zero. In particular, allowing a primitive root of unity $\zeta_m$ as a named constant is not the same as requiring a radical formula for it over $\Q$. An algorithm optimal over $K(\zeta_m)$ need not be optimal under a convention charging for the construction of $\zeta_m$ \cite{landau,hornghuang,honsbeek}.
 
+It also depends on the allowed indices. For positive $a$, $\sqrt{\sqrt[3]a}=\sqrt[6]a$ is a depth reduction when sixth roots are permitted; under a grammar allowing only square and cube roots as primitive operations, the same rewrite changes the language. Index restrictions are central, not cosmetic, in bounded-degree denesting \cite{blomer2000}.
+
+\paragraph{The radical filtration.} In an algebraic-root model, define
+\begin{equation}\label{eq:filtration}
+K^{(0)}=K,\qquad
+K^{(j+1)}=K^{(j)}\bigl(\beta:\beta^n\in K^{(j)}\text{ for some }n\ge2\bigr),
+\end{equation}
+all roots being taken in a fixed algebraic closure. Each element of these fields uses only finitely many generators, despite the infinite-looking notation, and membership in $K^{(j)}$ expresses representability at depth at most $j$. A separate real version restricts to real roots and real intermediate fields. Honsbeek uses this framework to separate structural questions from accidents of syntax \cite{honsbeek}. A field generated by radicals of elements of $K$ is not necessarily a field in which every subfield has an equally obvious radical generating set; roots of unity are one source of this difficulty.
+
+Finally, writing an algebraic number as a canonical \texttt{Root} object suppresses visible radical signs without producing a radical expression of smaller depth. Such a representation is excellent for exact arithmetic, but it answers a different question.
+
 \subsection{Five tasks that should not be conflated}
 \paragraph{Equality.} Given exact algebraic expressions $E$ and $F$, decide whether they represent the same selected algebraic number. One may pass to exact algebraic-number representations and perform arithmetic there. This decides equality in principle, although the representation can become large.
 
@@ -155,7 +215,7 @@ Since $1/\alpha=\sqrt3-\sqrt2$, we recover
 \sqrt2=\frac{\alpha-\alpha^{-1}}2,
 \qquad \sqrt3=\frac{\alpha+\alpha^{-1}}2.
 \]
-Therefore $\Q(\alpha)=\Q(\sqrt2,\sqrt3)$, a degree-four extension with Galois group the Klein four-group. Denesting has changed the arrangement of root extractions, not the algebraic degree. This is a useful companion example to Landau's expository discussion of the same sum \cite{landauviews}.
+Therefore $\Q(\alpha)=\Q(\sqrt2,\sqrt3)$, a degree-four extension with Galois group the Klein four-group, whose three quadratic subfields are $\Q(\sqrt2)$, $\Q(\sqrt3)$ and $\Q(\sqrt6)$. Denesting has changed the arrangement of root extractions, not the algebraic degree. This is a useful companion example to Landau's expository discussion of the same sum; the number's decimal expansion is OEIS A135611 \cite{landauviews,oeis}.
 
 It also disproves an erroneous formulation appearing in the source material: denestability does not require the result to lie in a \emph{single quadratic field} $\Q(\sqrt s)$. The sum in \eqref{eq:quarticexample} plainly does not. The relevant local field criterion instead allows a suitable scalar multiple of the original radicand to become a square in its quadratic field; Section~\ref{sec:quadratic} makes this explicit.
 
@@ -216,7 +276,11 @@ For $\tau\in H$, the equation $\alpha^2\in L$ gives $\tau(\alpha)=\varepsilon_\t
 Conversely suppose $D=d^2$ with $d\ge0$ rational. The positivity of $a+b\sqrt r$, together with $D\ge0$, implies $a>0$ and $a\ge d$. Set $u=(a+d)/2$ and $v=(a-d)/2$. Then $u,v\ge0$ and $uv=b^2r/4$. Squaring the right side of \eqref{eq:direct} gives $a+b\sqrt r$. The right side is positive: this is immediate for $b>0$, and for $b<0$ it follows from $u>v$, since the nondegenerate rational hypotheses rule out $D=0$. It is therefore the required positive square root.
 \end{proof}
 
-The theorem is classical; the proof is supplied here to make the necessity for \emph{arbitrary} square-root expressions transparent. Borodin--Fagin--Hopcroft--Tompa (BFHT) provide the algorithmic and structural setting, and Gkioulekas gives an accessible exposition of the direct and indirect formulas \cite{bfht,gkioulekas}.
+The theorem is classical; the proof is supplied here to make the necessity for \emph{arbitrary} square-root expressions transparent. Borodin--Fagin--Hopcroft--Tompa (BFHT) provide the algorithmic and structural setting, and Gkioulekas gives an accessible exposition of the direct and indirect formulas \cite{bfht,gkioulekas}. The proof does not assert that redundant expressions with three or more terms are impossible; it asserts that, when a square-root-only denesting exists, at most two square-root terms suffice.
+
+\begin{example}[Signs are part of the answer]
+For $\sqrt{5+2\sqrt6}$, $D=25-24=1$ and \eqref{eq:direct} gives $\sqrt3+\sqrt2$. For $\sqrt{3-2\sqrt2}$ the answer is $\sqrt2-1$, not $1-\sqrt2$: both signs give the correct square, but only one is the principal square root. A wrong branch passes a squared-identity test, so the sign must be certified separately.
+\end{example}
 
 The field-theoretic version often used in denesting arguments says, in this setting, that a suitable nonzero $s\in\Q$ makes $s(a+b\sqrt r)$ a square in $\Q(\sqrt r)$. Formula \eqref{eq:direct} illustrates this: multiplying $\alpha$ by one of its rational square-root components yields an element of the original quadratic field. This is very different from asserting $\alpha\in\Q(\sqrt s)$.
 
@@ -280,13 +344,29 @@ An algorithm may lower depth without reaching depth one. A useful example is
 \end{equation}
 Indeed $11-2\sqrt{29}>0$, since $121>116$, and the square of the right side equals the radicand. Positivity selects the desired square root. The longest chain has shortened from three root extractions to two, but a nested square root remains.
 
-Global cancellation can also simplify an expression even when isolated terms are awkward. For example, putting $u=\sqrt{1+\sqrt3}>0$ gives
-\[
-\sqrt{3+3\sqrt3}=\sqrt3\,u,
-\qquad
-\sqrt{10+6\sqrt3}=(1+\sqrt3)u,
-\]
-so their corresponding signed sum is zero. A denester that treats summands independently can miss such structure. BFHT and implementation papers therefore study expressions, dependencies, and recursive transformations, not just one fixed two-term pattern \cite{bfht,jeffrey}.
+A typical practical step behind such reductions rewrites $\sqrt{X+Y}$ through $X^2-Y^2$:
+\begin{equation}\label{eq:recursive}
+\sqrt{X+Y}
+=\sqrt{\frac{X+\sqrt{X^2-Y^2}}2}
++\sqrt{\frac{X-\sqrt{X^2-Y^2}}2},
+\qquad X\ge Y\ge0.
+\end{equation}
+Negative $Y$ requires a signed difference and a nonnegativity check. Merely applying the identity need not simplify anything: the new discriminant can be harder than the original radicand. The practical issue, addressed by Jeffrey--Rich and visible in modern source code, is to find a useful split and to accept it only when a well-founded complexity measure decreases \cite{jeffrey,sympysource,maxima}.
+
+Global cancellation can also simplify an expression even when isolated terms are awkward. Putting $u=\sqrt{1+\sqrt3}>0$ gives $\sqrt{3+3\sqrt3}=\sqrt3\,u$ and $\sqrt{10+6\sqrt3}=(1+\sqrt3)u$, hence
+\begin{equation}\label{eq:cancel}
+\sqrt{1+\sqrt3}+\sqrt{3+3\sqrt3}-\sqrt{10+6\sqrt3}=0,
+\end{equation}
+although each term separately fails the depth-one real-radical test. A denester that treats summands independently can miss such structure. BFHT and implementation papers therefore study expressions, dependencies, and recursive transformations, not just one fixed two-term pattern \cite{bfht,jeffrey,blomerthesis}.
+
+\subsection{Rational functions and multiquadratic inputs}
+An outer square root of $(\alpha+\beta\sqrt r)/(\gamma+\delta\sqrt r)$ can first be rationalized within $\Q(\sqrt r)$, provided the denominator is nonzero, and then tested by the preceding formulas. Factors such as $\sqrt{a\sqrt p+b\sqrt q}$ can often be reduced by extracting a fourth root and treating the remaining quadratic-field expression. Domain conditions must survive this preprocessing.
+
+For an input of the form $\sqrt{a+b\sqrt p+c\sqrt q+d\sqrt{pq}}$ it is useful to group the radicand as $A+B\sqrt q$ with $A,B\in\Q(\sqrt p)$ and to apply the field-theoretic criteria over that base. The resulting squarehood questions are then questions \emph{in the base field}, not tests for rational squares, and relative denesting over $\Q(\sqrt p)$ is not automatically total denesting over $\Q$. This caveat resolves a frequent ambiguity in informal extensions of the two-surd formula \cite{bfht,mo}. A concrete identity, useful as a regression test because it requires multi-term matching and dependence detection, is
+\begin{equation}\label{eq:multi}
+\sqrt{112+70\sqrt2+(46+34\sqrt2)\sqrt5}=5+4\sqrt2+3\sqrt5+\sqrt{10};
+\end{equation}
+the right side is positive and its square is exactly the radicand.
 
 \section{Ramanujan's identities and higher-index examples}\label{sec:ramanujan}
 
@@ -379,6 +459,12 @@ satisfy $P_n(u+v)=u^n+v^n$. This follows by multiplying $u^n+v^n$ by $u+v$ and s
 
 Such relations turn sums and differences of radicals into polynomial identities and explain the usefulness of Cardan, Chebyshev, and related polynomial families. Osler and Witu\l a--S\l ota develop this route explicitly; the Ramanujan-unit literature supplies a more arithmetic perspective \cite{osler,witula,berndt98}. The recurrence is a mechanism for generating and proving families of formulas, not by itself a complete minimum-depth algorithm for arbitrary input.
 
+Writing $D_n(T,c)$ for $P_n$ with $T=u+v$ and $c=uv$, the first cases are
+\[
+D_3(T,c)=T^3-3cT,\qquad D_5(T,c)=T^5-5cT^3+5c^2T .
+\]
+For real odd $n$, a proposed denesting of $\sqrt[n]{a+b\sqrt p}$ \emph{inside} $\Q(\sqrt p)$ must have rational product $c$ with $c^n=a^2-b^2p$ and rational trace $T$ with $D_n(T,c)=2a$. This is a useful candidate-generation strategy for higher odd indices; the candidate must still be reconstructed and checked, and the cubic uniqueness argument of Section~\ref{sec:cubicquadratic} does not transfer unchanged to every odd degree. In the fifth-root example \eqref{eq:negativefifth}, the conjugate pair $1\pm\sqrt2$ has product $-1$ and trace $2$, and indeed $D_5(2,-1)=82=2\cdot41$. Shevelev's Ramanujan cubic polynomials and the Barbero--Cerruti--Murru--Abrate link with Shanks polynomials supply a complementary source of identities through cyclic cubic fields, trigonometric expressions for roots, and Gaussian periods \cite{shevelev,barbero}.
+
 \section{Two precise higher-index criteria}\label{sec:highercriteria}
 
 \subsection{Honsbeek's square root of a sum of cube roots}
@@ -421,7 +507,7 @@ with the appropriate sign and compatible roots. For real cube roots and a positi
 \left(-\frac{s^2}{2}+su+u^2\right)^2
 -(u^3-s^3)(1+u)=\frac{F_{u^3}(s)}4.
 \end{equation}
-Multiplying by $A^4$ proves the square of \eqref{eq:honsformula}. Because $q$ is not a rational cube, $u^3-s^3\ne0$, so its denominator is nonzero. In the positive-real case the identity forces $\beta-s^3\alpha>0$.
+Multiplying by $A^4$ proves the square of \eqref{eq:honsformula}. Because $q$ is not a rational cube, $u^3-s^3\ne0$, so its denominator is nonzero. In the positive-real case the identity forces $\beta-s^3\alpha>0$. The certificate also explains the coefficient equations in Honsbeek's proof: writing $1+u=f(x+yu+zu^2)^2$ and comparing the three basis coefficients forces $x/z=-(y/z)^2/2$, and setting $s=y/z$ gives $F_q(s)=0$. The necessity direction uses the structural result that a square root of an element $\delta$ of a pure cubic field has depth one exactly when $\delta$ is a rational multiple of a square in that field \cite{honsbeek}.
 
 The criterion is a condition on the \emph{ratio}. It is not the claim that the original ordered integer pair must literally equal
 \[
@@ -496,7 +582,11 @@ For example,
 \qquad
 \sqrt[3]{85+62\sqrt7}=1+2\sqrt7.
 \]
-In contrast, $a=b=1,p=2$ gives $N=-1$, a rational cube, but $X^3+3X-2$ has no rational root. Its possible integral roots, by the rational-root theorem, are $\pm1,\pm2$, and none is a root. Thus a cube norm alone is not sufficient.
+In contrast, $a=b=1,p=2$ gives $N=-1$, a rational cube, but $X^3+3X-2$ has no rational root. Its possible integral roots, by the rational-root theorem, are $\pm1,\pm2$, and none is a root. Thus a cube norm alone is not sufficient. A second example of the same phenomenon is $\sqrt[3]{3+\sqrt{10}}$: the norm is again $-1$, but $X^3+3X-6$ has no rational root, because a rational root of this monic integral polynomial would be an integer whereas its unique real root lies strictly between $1$ and $2$. A further positive example is $\sqrt[3]{90+34\sqrt7}=3+\sqrt7$, with $N=8$, $t=2$ and $x=6$.
+
+\begin{remark}[What the test does not say]
+A negative result proves only that the real cube root is not in the specified quadratic field. It is not, by itself, a proof that no depth-one expression involving other root indices or other radicands exists; a broader non-denesting assertion requires a corresponding structural theorem.
+\end{remark}
 
 Cavallo's polynomial can also be written
 \[
@@ -516,7 +606,7 @@ This observation neither proves that integer factorization is hard nor claims a 
 \subsection{Canonicalization before general denesting: Fateman, Caviness, and Zippel}
 Fateman's dissertation and the Caviness--Fateman paper belong to the foundations of symbolic radical simplification. Their importance lies in representation, dependence relations, and canonicalization of unnested radical expressions. The RADCAN lineage in MACSYMA provides a practical context for these ideas. It is inaccurate to describe an unnested-radical canonicalizer as already solving arbitrary radical-depth minimization \cite{fateman,caviness}.
 
-Zippel's 1977 thesis and 1985 paper move toward the structure of expressions involving radicals, including linearly independent bases and sufficient denesting conditions. They are useful for understanding why extracting the apparent coefficient of a radical is not always a valid operation until dependencies are known. A collection of syntactically different radicals need not form a basis \cite{zippel77,zippel85}.
+Zippel's 1977 thesis, his conference contribution of the same year, and the 1985 paper move toward the structure of expressions involving radicals, including linearly independent bases and sufficient denesting conditions. They are useful for understanding why extracting the apparent coefficient of a radical is not always a valid operation until dependencies are known. A collection of syntactically different radicals need not form a basis \cite{zippel77,zippel1977,zippel85}.
 
 The 1985 paper must be read together with Landau's later note on ``Zippel denesting.'' That note repairs a gap or missing hypothesis in the earlier development and proves a necessary-and-sufficient version in the appropriate setting. A secondary quotation of ``Zippel's theorem'' without its field and roots-of-unity hypotheses is therefore unsafe \cite{landauzippel}.
 
@@ -561,12 +651,46 @@ The recursive norm idea can be understood from
 \]
 When $\sqrt{X^2-Y^2}$ is simpler than $\sqrt{X+Y}$, one tries a transformation modeled on the quadratic formula. Success depends on finding a suitable decomposition, simplifying the norm, and controlling branches and intermediate expression growth. This is a principled heuristic framework, not evidence that a timeout or a failed local rewrite proves non-denestability.
 
+\subsection{A comparison with the parameters left visible}
+Table~\ref{tab:complexity} summarizes the classical lines of work together with the qualification that each complexity statement must carry.
+
+\begin{longtable}{@{}p{0.20\textwidth}p{0.36\textwidth}p{0.37\textwidth}@{}}
+\caption{The classical algorithmic literature and the parameters that its guarantees depend on.}\label{tab:complexity}\\
+\toprule
+Line of work & Main achievement & Qualification that must be retained\\
+\midrule\endfirsthead
+\toprule Line of work & Main achievement & Qualification that must be retained\\\midrule\endhead
+\bottomrule\endfoot
+Caviness--Fateman; Zippel & Radical normalization, bases, dependence, structural denesting criteria. & Normalization is not automatically minimum-depth denesting.\\[4pt]
+BFHT & Exact square-root structure and recursive procedures. & Arithmetic cost, DAG size, expanded formulas, and bit cost differ.\\[4pt]
+Landau & General structural denesting via splitting fields. & Roots of unity and their cost matter; splitting fields may dwarf the input.\\[4pt]
+Horng--Huang; Cotner & Minimum-depth formulations and refinements. & Distinguish polynomial input, radical input, and root conventions; Cotner's detailed analysis was not inspected here.\\[4pt]
+Bl\"omer 1992 / thesis & Strong depth-two and related algorithms avoiding the general splitting-field route. & Bounds involve extension-degree and representation parameters; not a blanket polynomial-in-string-length statement.\\[4pt]
+Bl\"omer 2000 & Bounded-degree optimal or near-optimal denesting. & Polynomial in a splitting-field description, under the stated degree restrictions.\\[4pt]
+Jeffrey--Rich & Practical recursive square-root transformations. & A heuristic measure and chosen splits guide the search; no universal minimum-depth guarantee.\\
+\end{longtable}
+
+There is an elementary warning against measuring cost by depth alone. The depth-one expression $2^{1/2^k}$ has algebraic degree $2^k$, although its index can be written with $O(k)$ bits; writing its minimal polynomial densely is already disproportionate to the input. Conversely the expression is visibly unnested. Large field degree can make one algorithm expensive without proving that the underlying denesting decision intrinsically requires that cost. Any modern complexity claim should therefore identify the encoding of rational coefficients and root indices, whether expressions are trees or shared graphs, the cost of arithmetic in the base field, the degree and size of the extensions constructed, the output representation, and whether the algorithm is deterministic, probabilistic, conditional, or heuristic.
+
 \section{Field theory, linear independence, and the source of difficulty}\label{sec:fields}
 
 \subsection{Radical layers and abelian information}
 In characteristic zero, adjoining suitable roots of unity makes radical extensions amenable to Kummer-theoretic analysis. When the necessary roots of unity are already in the base, a layer obtained by adjoining roots of elements of that base has abelian Galois structure after the relevant normality conditions are met. Iterating such layers relates nesting to successive abelian information and hence to derived-series constructions \cite{landau,hornghuang,honsbeek}.
 
 This explains the appearance of Galois groups, their subgroups and quotients, and splitting fields in general algorithms. It does not justify the unconditional formula ``minimum radical depth equals the derived length of the Galois group'' for every selected root and every base-field convention. One must specify the field whose Galois group is used, the normal closure, authorized radical indices, and whether cyclotomic constants are free. A formula for a single element can also exploit a smaller subfield than a formula for a complete splitting field.
+
+For orientation, a radical tower can be written
+\[
+K=K_0\subseteq K_1\subseteq\cdots\subseteq K_d,
+\qquad K_{j+1}=K_j(\theta_{j,1},\ldots,\theta_{j,m_j}),
+\]
+where powers of each newly adjoined element lie in $K_j$. A single layer can contain several parallel adjunctions; replacing all of them by a chain of one-generator extensions artificially inflates the apparent depth. Galois closure and roots of unity make the multiplicative structure of these layers accessible to group theory, but constructing that closure can dominate the computation.
+
+An idealized formulation makes the relationship transparent. Suppose $K$ contains all roots of unity and let $N$ be the finite normal closure of $K(\alpha)/K$. If $G=\Gal(N/K)$ is solvable, its derived length is the minimum number of abelian layers in a normal series; the fields fixed by the derived subgroups construct, by Kummer theory, a radical representation with that many parallel layers, and conversely a depth-$j$ radical extension over such a $K$ has solvable normal closure of derived length at most $j$. Thus derived length measures radical depth in this roots-of-unity-complete setting. The hypothesis cannot be erased: $\sqrt[3]2$ has depth one over $\Q$, whereas the normal closure of $\Q(\sqrt[3]2)$ has Galois group $S_3$, of derived length two. After adjoining $\zeta_3$ the relevant remaining extension is cyclic.
+
+Honsbeek's Chapter~4 supplies a further warning. For certain square roots of elements of pure cubic fields, metabelianity of the normal closure gives an exact denesting criterion, but this is not a universal characterization of depth-one radicals: the discussion of $\sqrt[3]{1+\sqrt2}$ shows that a vanishing second derived subgroup alone is not a general test for membership in $\Q^{(1)}$, and the chapter separates denesting with and without roots of unity. Landau's repair of a specific sufficient condition in Zippel's work and Honsbeek's counterexample to a stronger conjectural extension are therefore not contradictory claims about one theorem \cite{honsbeek,landauzippel}.
+
+Resolvents and subfield computations provide another language for parts of the computation. Factoring a polynomial whose roots encode subgroup invariants may reveal intermediate fields or Galois structure and so target a lower-depth representation without constructing every conjugate at once. Kl\"uners's subfield algorithm, Landau's factorization over number fields, and Lenstra's \emph{Entangled radicals} lectures supply this infrastructure; reconstruction of the chosen element and branch selection remain additional work \cite{kluners,landaufactor,lenstra06,pari,cohen}.
 
 The familiar unsolvability of a generic quintic is related but not the direct obstacle in denesting an input already given by radicals. Such an input is already in a radical extension. The question is how economically that same algebraic number can be represented, not whether an arbitrary unrelated degree-five polynomial has a radical solution.
 
@@ -585,7 +709,7 @@ A relevant recent addition is Perucca's 2025 preprint, \emph{Linear relations am
 \subsection{Degree, size, and the unavoidable cost of output}
 A compact radical expression can encode an extension of large degree. Even $r$ independent square roots produce a field of degree $2^r$, while the written list of radicands has length only linear in $r$ apart from coefficient encodings. A generic element expanded in the full basis can require $2^r$ coefficients. A splitting field can be much larger than the field generated by the selected element.
 
-Consequently ``polynomial time'' is incomplete without identifying the quantity in which it is polynomial. Relevant quantities include the length of the original formula or shared circuit, the degrees and bit lengths of the root indices, the degree of the represented number field, coefficient heights, and the size of the splitting-field description. A claimed output bound must also say whether repeated subexpressions may be shared. These are not technical distractions: they explain how an algorithm can be mathematically constructive and still unsuitable as a routine interactive simplifier \cite{bfht,blomerthesis,blomer2000}.
+Consequently ``polynomial time'' is incomplete without identifying the quantity in which it is polynomial. Write $s$ for the size of the input expression or circuit, $N$ for the degree of an ambient algebraic extension, $S$ for a splitting-field description size, and $L$ for the size of a requested output formula. These parameters need not be polynomially related: $\Q(\sqrt{p_1},\ldots,\sqrt{p_m})$ has degree $2^m$ for distinct primes while the list of radicals has only $m$ entries apart from coefficient bit lengths, and arithmetic in an extension field is not a constant-cost bit operation when coordinates and coefficients grow. A claim of polynomially many field operations therefore does not establish polynomial Turing complexity, and any formula-producing algorithm needs at least enough time to write its output of size $L$. A claimed output bound must also say whether repeated subexpressions may be shared. These are not technical distractions: they explain how an algorithm can be mathematically constructive and still unsuitable as a routine interactive simplifier \cite{bfht,blomerthesis,blomer2000}.
 
 A practical optimizer must choose among competing outputs. For example, a shorter formula may retain one nested square root, while a completely denested expression introduces many high-index radicals. An implementation can legitimately prefer either, but it should describe its objective rather than advertise an undefined notion of the ``simplest'' form.
 
@@ -603,7 +727,7 @@ Osipov's 1997 article is an earlier reference on simplifying nested real radical
 
 Girstmair's \emph{Reducing radicals in the spirit of Euclid} appeared as a 2020 preprint and in \emph{Journal of Symbolic Computation} \textbf{104} (2021), 356--365. For odd $p\ge3$, it studies expressions such as $\sqrt[p]{d+\sqrt R}$ of degree $2p$ and represents them by polynomial combinations of algebraic numbers of degrees at most $p$, with simple radical formulas in certain cases. Hypergeometric summation and Zeilberger's algorithm enter the proof. The primary optimization is \emph{degree reduction}, which must not automatically be identified with depth-one denesting \cite{girstmair}.
 
-Dokmeci's 2017 MIT PRIMES report provides an accessible student research treatment of field extensions, radical denesting, and non-denesting criteria. It is useful supplementary exposition, with a different publication status from a refereed journal article \cite{dokmeci}. Campbell--Zujev's 2015 preprint supplies further \emph{finite} Ramanujan-style identities; classifying it as only an infinite-radical convergence paper, as one report effectively did, loses its main relevance \cite{campbell}.
+Dokmeci's 2017 MIT PRIMES report provides an accessible student research treatment of field extensions, radical denesting, and non-denesting criteria. It is useful supplementary exposition, with a different publication status from a refereed journal article; Rahal's Stockholm bachelor's thesis of the same year is instead an introductory synthesis \cite{dokmeci,rahal}. Campbell--Zujev's 2015 preprint supplies further \emph{finite} Ramanujan-style identities; classifying it as only an infinite-radical convergence paper, as one report effectively did, loses its main relevance \cite{campbell}.
 
 \subsection{Fifth roots and elliptic curves: Tonien, 2025}
 Tonien's \emph{Nested fifth root radical identities from elliptic curves} appeared in \emph{Journal of Computational Algebra} \textbf{13--14} (2025), article 100032. The publisher record and author publication listing identify a family of fifth-root radical identities obtained using elliptic curves. This adds an arithmetic-geometric method of constructing special formulas, rather than a replacement for the general denesting algorithms \cite{tonien}.
@@ -623,7 +747,13 @@ Likewise, trigonometric evaluations of special radicals, formulas from solvable 
 \section{Equality, radical identity testing, and comparison}\label{sec:complexity}
 
 \subsection{Exact equality is decidable, but encoding matters}
-Every well-defined finite expression formed from rational constants by algebraic operations and specified algebraic root choices represents an algebraic number. Minimal polynomials, field arithmetic, and isolating real intervals or complex regions provide a route to exact equality testing. Thus it is wrong to say that equality of such expressions is undecidable merely because a simplifier sometimes returns an unchanged expression. The cost of constructing the necessary algebraic representation is a different question \cite{cohen,sage,pari,flint}.
+Every well-defined finite expression formed from rational constants by algebraic operations and specified algebraic root choices represents an algebraic number. Minimal polynomials, field arithmetic, and isolating real intervals or complex regions provide a route to exact equality testing. Thus it is wrong to say that equality of such expressions is undecidable merely because a simplifier sometimes returns an unchanged expression. The cost of constructing the necessary algebraic representation is a different question; the exact-geometric-computation literature is the natural application context for such separation bounds and reliable predicates \cite{cohen,sage,pari,flint,exactgeometry}.
+
+An identity tester need not denest. For instance, with $\varphi=(1+\sqrt5)/2$ one has $\varphi^3=2+\sqrt5$ and $(\varphi-1)^3=\varphi^{-3}=\sqrt5-2$, so
+\[
+\sqrt[3]{2+\sqrt5}-\sqrt[3]{\sqrt5-2}=1
+\]
+can be certified by a polynomial identity and a real-root argument without first denesting either cube root separately. Conversely a number can already have depth one while its sign is computationally delicate because of cancellation among many terms.
 
 A numerical match is only a candidate check. A common minimal polynomial is also insufficient: $\sqrt2+\sqrt3$ and $\sqrt3-\sqrt2$ have the same minimal polynomial $X^4-10X^2+1$ but are different positive real numbers. A valid certificate must distinguish the selected roots, for example through disjoint isolating intervals, or verify equality directly in a common exact field.
 
@@ -662,17 +792,19 @@ System & Relevant operation & Appropriate interpretation\\
 \toprule System & Relevant operation & Appropriate interpretation\\\midrule
 \endhead
 \bottomrule\endfoot
-SymPy & \texttt{sqrtdenest} & Targeted square-root denesting; unsuccessful search need not prove impossibility.\\[5pt]
+SymPy & \texttt{sqrtdenest}; \texttt{nthroot} & Targeted square-root denesting, and a real $n$th-root routine for suitable sums of surds; unsuccessful search need not prove impossibility.\\[5pt]
 Maxima & \texttt{raddenest}; \texttt{radcan} & Denesting package with square-root and selected higher-root routines; normalization is a distinct operation.\\[5pt]
+Derive (historical) & Jeffrey--Rich recursive methods & The measure guiding the transformations is not ordinary radical depth.\\[5pt]
 Wolfram & \texttt{RootReduce}, \texttt{ToRadicals}; contributed \texttt{RadicalDenest} & Algebraic-number reduction, radical reconstruction, and heuristic denesting search are separate interfaces.\\[5pt]
 Maple & \texttt{radnormal}, \texttt{simplify(...,radical)} & Algebraic normalization and radical simplification, without a documented global minimum-depth contract.\\[5pt]
 SageMath & \texttt{AA}, \texttt{QQbar}, \texttt{radical\_expression()} & Exact algebraic arithmetic and attempted radical reconstruction; symbolic simplification has separate branch caveats.\\[5pt]
 PARI/GP & \texttt{nfinit}, \texttt{nfsubfields}, \texttt{nfisincl} & Number-field and subfield infrastructure for building algorithms.\\[5pt]
-FLINT / Calcium & \texttt{qqbar}, \texttt{ca\_sqrt}, formula-conversion routines & Exact algebraic representations, certified field-expression checks, and controlled heuristic simplification.\\
+FLINT / Calcium & \texttt{qqbar}, \texttt{ca\_sqrt}, formula-conversion routines & Exact algebraic representations, certified field-expression checks, and controlled heuristic simplification.\\[5pt]
+Magma; FriCAS/Axiom; Giac/Xcas & Optimized field presentations; \texttt{RadicalSolvePackage}; symbolic simplification & A smaller defining polynomial or a radical solution of a low-degree polynomial is not a shallower expression for a specified element; do not infer the absence of all denesting methods from an unsuccessful interface search.\\
 \end{longtable}
 
-\subsection{SymPy: a dedicated square-root denester}
-The public function \texttt{sqrtdenest(expr, max\_iter=3)} is documented in SymPy's simplification module and implemented in \texttt{sympy/simplify/sqrtdenest.py}. The source cites BFHT and Jeffrey--Rich. The parameter \texttt{max\_iter} limits \emph{iterations}; the supplied reports' description of it as a default recursion depth changes the documented meaning \cite{sympy,sympysource}.
+\subsection{SymPy: a dedicated square-root denester and a real \texorpdfstring{$n$}{n}th-root routine}
+The public function \texttt{sqrtdenest(expr, max\_iter=3)} is documented in SymPy's simplification module and implemented in \texttt{sympy/simplify/sqrtdenest.py}. The source cites BFHT and Jeffrey--Rich; the regression tests are a useful source of deeper, multiquadratic, and cancellation examples. The parameter \texttt{max\_iter} limits \emph{iterations}; the supplied reports' description of it as a default recursion depth changes the documented meaning \cite{sympy,sympysource,sympytests}.
 
 A minimal example, executed with SymPy 1.14.0 for this report, is
 \begin{lstlisting}[language=Python]
@@ -680,7 +812,18 @@ from sympy import sqrt, sqrtdenest
 sqrtdenest(sqrt(5 + 2*sqrt(6)))
 # sqrt(2) + sqrt(3)
 \end{lstlisting}
-The same installation finds the indirect fourth-root form of \eqref{eq:indirectexample} and the partial reduction \eqref{eq:partial}. It leaves $\sqrt{2+\sqrt2}$ unchanged. The mathematical impossibility statement for the last example comes from the local structural theorem, not from that unchanged output.
+The same installation finds the indirect fourth-root form of \eqref{eq:indirectexample}, the sign-sensitive $\sqrt{3-2\sqrt2}=\sqrt2-1$, the partial reduction \eqref{eq:partial}, the multiquadratic square \eqref{eq:multi}, and the cancellation \eqref{eq:cancel}. It leaves $\sqrt{2+\sqrt2}$ unchanged. The mathematical impossibility statement for the last example comes from the local structural theorem, not from that unchanged output.
+
+The supplied reports mostly overlooked a second documented routine. \texttt{nthroot}, importable from \texttt{sympy.simplify.simplify}, seeks the \emph{real} $n$th root of a suitable sum of surds, first by candidate recognition and then by a minimal-polynomial route when needed \cite{sympy}:
+\begin{lstlisting}[language=Python]
+from sympy import sqrt
+from sympy.simplify.simplify import nthroot
+nthroot(7 + 5*sqrt(2), 3)     # 1 + sqrt(2)
+nthroot(85 + 62*sqrt(7), 3)   # 1 + 2*sqrt(7)
+nthroot(90 + 34*sqrt(7), 3)   # 3 + sqrt(7)
+nthroot(41 - 29*sqrt(2), 5)   # 1 - sqrt(2)
+\end{lstlisting}
+All four outputs were obtained with SymPy 1.14.0 and are recorded in the verification transcript. It is therefore inaccurate to infer that the library cannot denest cube or fifth roots merely because \texttt{sqrtdenest} is specialized for square roots; on the other hand, the presence of \texttt{nthroot} does not mean that every nested radical is handled.
 
 Nearby commands solve different problems. \texttt{radsimp} primarily rationalizes radical denominators; \texttt{powdenest} simplifies nested powers subject to assumptions; \texttt{unrad} helps remove radicals from equations by introducing polynomial conditions. None should be advertised as a universal replacement for denesting. Source tests and issue discussions are useful regression material, but an old failure report is not evidence that the same bug persists in the currently inspected version \cite{sympy,sympysource,sympyissues}.
 
@@ -696,7 +839,7 @@ domain : real$
 raddenest(sqrt(5 + 2*sqrt(6)));
 raddenest((41 - 29*sqrt(2))^(1/5));
 \end{lstlisting}
-Package availability and behavior should be checked against the installed Maxima release and the package revision. The older \texttt{radcan} normalization lineage remains relevant, but rationalizing or canonicalizing an expression and minimizing its root depth are separate jobs.
+Package availability and behavior should be checked against the installed Maxima release and the package revision, and the legacy \texttt{sqdnst}/\texttt{sqrtdenest} names in older mailing-list examples should be verified in the installed manual rather than assumed \cite{maximamanual,maximathread}. The older \texttt{radcan} normalization lineage remains relevant, but rationalizing or canonicalizing an expression and minimizing its root depth are separate jobs. The inspected higher-root code sometimes enumerates rational-root candidates through integer divisors; that is an implementation choice, not evidence that the underlying restricted decision problem is integer-factorization-hard.
 
 \subsection{Wolfram Language: separate exact values from presentation}
 \texttt{RootReduce} reduces exact algebraic expressions to canonical algebraic-number representations, often a single \texttt{Root} object. That can certify identity or reveal a smaller algebraic field without producing a denested radical formula. \texttt{ToRadicals} attempts radical reconstruction; its official documentation guarantees the relevant low-degree cases through degree four but warns that some higher-degree radical representations may not be found \cite{wolframroot,wolframradicals}.
@@ -718,7 +861,7 @@ ResourceFunction["RadicalDenest"][e, TimeConstraint -> 5]
 This call is documented usage, not an execution result from this report. The source material's assertions about exact release dates and all internal contributors are not necessary to characterize the verified interface and are not repeated as independently checked facts.
 
 \subsection{Maple: normalization is stronger than a cosmetic rewrite, but different from optimization}
-Maple's \texttt{radnormal} documentation describes normalization of algebraic numbers written in radical notation, including its zero-recognition property on the documented input class. \texttt{simplify(expr, radical)} supplies related radical simplification. These are substantive algebraic operations, not merely display formatting \cite{maple}.
+Maple's \texttt{radnormal} documentation describes normalization of algebraic numbers written in radical notation, including its zero-recognition property on the documented input class; denesting occurs only in some cases. The documented pipeline constructs a basis using indexed \texttt{RootOf} representations, applies algebraic normalization, and converts back to radicals, using principal roots. \texttt{simplify(expr, radical)} separates simplification of individual radicals, elimination of dependent radicals, and rational-expression normalization, and \texttt{evala} has its own role. These are substantive algebraic operations, not merely display formatting \cite{maple}.
 
 At the same time, a normal form for algebraic values does not entail minimum radical nesting. Nor does the existence of a public command reveal which particular research algorithm is used in the proprietary implementation. A defensible workflow is to ask for a simplified form and then normalize its difference from the original:
 \begin{lstlisting}
@@ -738,7 +881,7 @@ a.minpoly()
 a.radical_expression()
 a == AA(2).sqrt() + AA(3).sqrt()
 \end{lstlisting}
-The equality test concerns exact selected real algebraic values. By contrast, symbolic \texttt{canonicalize\_radical()} uses radical simplification machinery associated with Maxima and has documented caveats about assumptions and branches. One should not infer the safety of a symbolic transformation from the correctness of \texttt{AA} arithmetic; these are different layers of the system.
+The equality test concerns exact selected real algebraic values. By contrast, the symbolic-ring method \texttt{canonicalize\_radical()}, reached for instance through \texttt{SR(a).canonicalize\_radical()}, delegates to radical simplification machinery associated with Maxima and has documented caveats about assumptions and branches. One should not infer the safety of a symbolic transformation from the correctness of \texttt{AA} arithmetic; these are different layers of the system. The exact algebraic layer is particularly useful for checking candidates produced by a heuristic denester, including candidates generated outside Sage.
 
 \subsection{PARI/GP: field infrastructure rather than a high-level denester}
 The official general-number-field interface documents \texttt{nfinit}, \texttt{nfsubfields}, \texttt{nfisincl}, \texttt{nffactor}, \texttt{nfroots}, and compositum operations. They provide the exact subfield, embedding, and factorization calculations from which a field-theoretic denester could be constructed \cite{pari}.
@@ -757,7 +900,7 @@ The FLINT documentation exposes a useful separation between exact algebraic valu
 Calcium's \texttt{ca\_sqrt} family distinguishes an inert square-root extension from simplification and factor-based extraction. The factor-based version searches for $x=A^2B$ in the current field and chooses the sign giving the principal square root; its documentation expressly does not guarantee a minimal residual $B$ \cite{calcium}. These interfaces are useful concrete examples of certified arithmetic combined with incomplete expression search. The inspected FLINT pages identify themselves as development documentation; no assertion is made that all listed options are implemented in every released version.
 
 \subsection{Other systems and historical developer material}
-The reports also mention Derive, Axiom/FriCAS, Giac/Xcas, Magma, a Maxima Galois-group solver, and a Rust routine called \texttt{denest\_sqrt}. The Jeffrey--Rich chapter supplies a verified historical implementation connection. A FriCAS developer discussion and Honda's repository are useful further leads, but solving a polynomial by radicals or simplifying roots in a general algebra system is not automatically a minimum-depth denesting facility \cite{fricas,honda}.
+The reports also mention Derive, Axiom/FriCAS, Giac/Xcas, Magma, a Maxima Galois-group solver, and a Rust routine called \texttt{denest\_sqrt}. The Jeffrey--Rich chapter supplies a verified historical implementation connection for Derive. Magma's optimized number-field representations aim at better defining data, not automatically at a minimal-depth display of every element; FriCAS/Axiom's \texttt{RadicalSolvePackage} exposes radical polynomial solving, which is adjacent to rather than synonymous with denesting, and the newer FriCAS names \texttt{rsimp} and \texttt{recursiveRootSimplification} mentioned in the reports were not verified at release level. A FriCAS developer discussion and Honda's repository are useful further leads, but solving a polynomial by radicals or simplifying roots in a general algebra system is not automatically a minimum-depth denesting facility \cite{magma,fricas,honda}.
 
 The Rust lead lacked sufficiently resolved documentation in this review and is retained as such in Section~\ref{sec:peripheral}. Blanket claims such as ``no major CAS implements any general denesting method'' or ``this is the most capable free denester'' would require broader source inspection and controlled comparative testing than the evidence here supports. They have therefore been replaced by positive, command-specific descriptions.
 
@@ -797,14 +940,14 @@ The proof shows exactly why the statement ``the nest converges if and only if $a
 \subsection{A reading guide to the analytic branch}
 Herschfeld's 1935 paper and Borwein--de Barra's 1991 article are classical starting points. Borwein--Borwein's \emph{Pi and the AGM} and P\'olya--Szeg\H{o}'s problem collection give broader analytic context rather than finite denesting algorithms \cite{herschfeld,borweinradicals,piagm,polya}.
 
-Gutin's preprint, first submitted in 2019 and revised in 2020, develops a constructive reformulation of Herschfeld's theorem and considers transfinite nesting. Its formulation should not be identified word-for-word with the classical theorem proved above \cite{gutin}. Mitra's 2024 preprint studies higher-root generalizations of Ramanujan-style infinite nests through functional equations \cite{mitra}. Popular accounts of Ramanujan's famous infinite radical belong on this analytic side of the bibliography, even when a search engine groups them with finite radical denesting.
+Gutin's preprint, first submitted in 2019 and revised in 2020, develops a constructive reformulation of Herschfeld's theorem and considers transfinite nesting. Its formulation should not be identified word-for-word with the classical theorem proved above \cite{gutin}. Mitra's 2024 preprint studies higher-root generalizations of Ramanujan-style infinite nests through functional equations \cite{mitra}. Popular accounts of Ramanujan's famous infinite radical, Tiwari's author-hosted exposition, and the informal articles retained from the reports belong on this analytic side of the bibliography, even when a search engine groups them with finite radical denesting \cite{tiwari,infiniteblogs}. Honsbeek's thesis also contains radical descriptions of special values of the Rogers--Ramanujan continued fraction; an explicit formula for a special value is not an algorithm that lowers the depth of arbitrary finite input \cite{honsbeek}.
 
 \section{Reproducible exact checks and a proposed benchmark protocol}\label{sec:verification}
 
 \subsection{What was actually run}
-The companion \texttt{verify.py} was executed under Python 3.13.5 with SymPy 1.14.0. It completed \textbf{26 exact checks}. The transcript is supplied as \texttt{verification\_results.txt}. The script performs rational and polynomial arithmetic, not floating-point recognition of identities.
+The companion \texttt{verify.py} merges the exact-check scripts of the three unified reports. It was executed under Python 3.14.4 with SymPy 1.14.0 and completed \textbf{59 exact checks}; the transcript is supplied as \texttt{verification\_results.txt} and the recorded SymPy outputs as \texttt{verification\_results.json}. The script performs rational and polynomial arithmetic, not floating-point recognition of identities.
 
-The checks include the direct and indirect quadratic examples, the algebraic certificate for Honsbeek's formula, the symmetry check obtained by swapping $\alpha$ and $\beta$, the Ramanujan identities \eqref{eq:ramcubic}--\eqref{eq:ram6}, the real fifth-root example, the trace--norm certificate \eqref{eq:tracecertificate}, two positive examples of Theorem~\ref{thm:cubicquadratic}, and the counterexample showing that a cube norm alone is insufficient. It also verifies that different conjugates can share the same minimal polynomial.
+The checks include the direct and indirect quadratic examples, the algebraic certificate for Honsbeek's formula (both for fixed ratios and as a polynomial identity in the ratio), the symmetry check obtained by swapping $\alpha$ and $\beta$, the Ramanujan identities \eqref{eq:ramcubic}--\eqref{eq:ram6}, the real fifth-root example, the trace--norm certificate \eqref{eq:tracecertificate}, three positive examples of Theorem~\ref{thm:cubicquadratic} and the two counterexamples showing that a cube norm alone is insufficient, the multiquadratic identity \eqref{eq:multi} and the cancellation \eqref{eq:cancel}, and the irreducibility of the minimal polynomial of $\sqrt2+\sqrt3$ together with the fact that a different conjugate shares it. In addition it sweeps all $210$ constructed cases of Theorem~\ref{thm:cubicquadratic} with $p\in\{2,3,5,6,7\}$, $-3\le A\le3$ and $B\in\{\pm1,\pm2,\pm3\}$, forming $a=A^3+3AB^2p$ and $b=3A^2B+B^3p$ and recovering $(A,B)$ by exact rational cube-root testing and rational polynomial roots, without enumerating divisors. The implementation rejects floating-point input in its rational-root helper.
 
 The general identities are reduced modulo polynomial relations such as $u^3-2$ and $v^3-5$. A zero remainder proves the needed algebraic identity because the relations vanish at the selected algebraic numbers. For even roots, separate exact rational inequalities establish positivity. The non-denesting interpretation of the tests still depends on the structural theorems; the script does not implement or independently reprove those theorems.
 
@@ -818,7 +961,7 @@ The executed examples gave
 \texttt{sqrtdenest}(\sqrt{2+\sqrt2})&=&\sqrt{2+\sqrt2}.
 \end{array}
 \]
-The middle output is equal to \eqref{eq:indirectexample}; different factorizations of the same depth-one form are not different denesting results. The partial example \eqref{eq:partial} was also reduced to its stated right side. These observations are a small reproducibility check, not a comparative performance study.
+The middle output is equal to \eqref{eq:indirectexample}; different factorizations of the same depth-one form are not different denesting results. The partial example \eqref{eq:partial}, the sign-sensitive $\sqrt{3-2\sqrt2}$, the multiquadratic identity \eqref{eq:multi}, and the cancellation \eqref{eq:cancel} were also reduced to their stated right sides, and \texttt{nthroot} returned the four results listed in Section~\ref{sec:cas}. These observations are a small reproducibility check, not a comparative performance study.
 
 \subsection{How to compare implementations fairly}
 A useful future benchmark should include direct square-root cases, indirect fourth-root cases, provably non-denestable real inputs, partial reductions, multi-term cancellations, mixed square/cube identities, and negative-radicand branch tests. Parameterized identities should be a separate category with explicit assumptions. Pure radical-index reduction, such as $\sqrt{\sqrt2}=\sqrt[4]2$, should not be confused with the harder additive examples.
@@ -835,7 +978,7 @@ For Ramanujan and mixed indices, start with Berndt--Chan--Zhang and selected not
 For implementation, the shortest productive route is Jeffrey--Rich, the SymPy source and tests, and the Maxima package documentation. Add exact algebraic-number arithmetic from Sage, PARI, or FLINT when candidate certification or field membership is the objective. For general algorithmic guarantees, return to Landau, Horng--Huang, Cotner, and Bl\"omer rather than infer completeness from a software example.
 
 \subsection{Books that supply the mathematical infrastructure}
-Zippel's \emph{Effective Polynomial Computation}, Geddes--Czapor--Labahn's \emph{Algorithms for Computer Algebra}, and von zur Gathen--Gerhard's \emph{Modern Computer Algebra} supply representation and polynomial-algorithm background. Davenport--Siret--Tournier provide a broader computer-algebra introduction. Cohen's \emph{A Course in Computational Algebraic Number Theory} is especially useful for field arithmetic, while Cox's \emph{Galois Theory} supplies the group/field dictionary \cite{zippelbook,geddes,gathen,davenport,cohen,cox}.
+Zippel's \emph{Effective Polynomial Computation}, Geddes--Czapor--Labahn's \emph{Algorithms for Computer Algebra}, and von zur Gathen--Gerhard's \emph{Modern Computer Algebra} supply representation and polynomial-algorithm background. Davenport--Siret--Tournier provide a broader computer-algebra introduction. Cohen's \emph{A Course in Computational Algebraic Number Theory} is especially useful for field arithmetic, while Cox's \emph{Galois Theory} and Newman's \emph{A Classical Introduction to Galois Theory} supply the group/field dictionary; Euclid's Book~X is the historical source for quadratic irrationalities, and Guin--Ruthven--Trouche is a pedagogical reference for interpreting CAS output \cite{zippelbook,geddes,gathen,davenport,cohen,cox,newman,euclid,guin}.
 
 These books are background references, not all monographs specifically devoted to denesting. Wester's edited volume is different in that it contains the directly relevant Jeffrey--Rich chapter. The source reports' general assertion that no denesting monograph exists was not independently established and is unnecessary for the reading guide.
 
@@ -855,6 +998,12 @@ Author bibliographies, publisher records, institutional thesis repositories, arX
 The merged reports proposed several directions, but some were phrased as sweeping open problems without a precise model. The following are useful project formulations, not claims that no previous work exists.
 
 \paragraph{Certified restricted denesters.} Implement complete algorithms for explicitly delimited classes, beginning with the quadratic and cubic criteria proved here. Return both a simplified expression and a certificate, or a theorem-based impossibility result within that class. This is more immediately testable than advertising a universal heuristic as complete.
+
+\paragraph{An explicit objective and an audit trail.} Keep the optimization objective explicit. One reasonable lexicographic cost is
+\[
+(\text{depth},\ \text{allowed-index penalty},\ \text{graph size},\ \text{coefficient bit size}),
+\]
+and a different application may prioritize numerical stability over display depth: denesting can create long sums with severe cancellation, for which an exact \texttt{Root} representation is better for evaluation. A layered pipeline should run cheap transformations first (rational-root extraction, the square-root norm tests, supported Cardan cases, the Honsbeek quartic), then recursive square-root transformations over a reduced radical basis, and only then expensive subfield, Kummer, or splitting-field work. Every stage should distinguish a certified simplification, a certified impossibility within a stated target class, and an inconclusive search; and the system should preserve an audit trail of assumptions, selected branches, the transformation applied, the exact equality certificate, and the complexity comparison that caused the new form to be accepted. This prevents simplification cycles and makes a hybrid symbolic/algebraic implementation debuggable.
 
 \paragraph{Output-sensitive and representation-sensitive algorithms.} Separate complexity in formula length, circuit size, field degree, and coefficient height. A practical algorithm should avoid expanding a full basis when only a small subfield or a short output certificate is needed. Bl\"omer's work and the modern exact-algebraic libraries are natural starting points for this question.
 
@@ -886,11 +1035,15 @@ A general polynomial-time denester follows from a field-degree bound. & The fiel
 Higher-depth denesting is simply mathematically unsolved. & General computability results exist; the precise model, complexity, and practical implementation are different questions.\\[5pt]
 Equality is undecidable, or numerical agreement proves equality. & Finite algebraic equality is decidable in exact representations; numerical agreement alone is not a certificate.\\[5pt]
 Matching minimal polynomials proves equality. & Conjugates share a minimal polynomial; root selection must also be checked.\\[5pt]
-Infinite square-root nests converge exactly when $a_n$ is bounded. & Herschfeld's criterion bounds $a_n^{2^{-n}}$.\\
+Infinite square-root nests converge exactly when $a_n$ is bounded. & Herschfeld's criterion bounds $a_n^{2^{-n}}$.\\[5pt]
+Deciding solvability by radicals in polynomial time yields polynomial-time minimum-depth denesting. & Landau--Miller decides a property of a polynomial; construction and output size are separate questions.\\[5pt]
+Jeffrey--Rich's bound is a depth bound. & Their measure $N$ adds contributions of summands; a bound on it is not a bound on syntactic depth.\\[5pt]
+SymPy can denest only square roots. & \texttt{nthroot} is a documented real $n$th-root routine; \texttt{sqrtdenest} is the square-root specialist.\\[5pt]
+A specific published algorithm is implemented inside a commercial system. & Only documented interface behaviour is asserted; proprietary internals were not inspected.\\
 \end{longtable}
 
 \subsection{Bibliographic and software corrections}
-The publication history has been normalized as follows. Landau's FOCS paper is the 1989 contribution on pp.~314--319, grouped with the 1992 SIAM article. The ``Zippel denesting'' note is the 1992 journal article, not a later upload date. Honsbeek's 1999 report is distinguished from the 2005 thesis. Girstmair's preprint is dated 2020 and its journal version 2021. Bumby's paper is dated 1987, not 2024. Elia, not Berndt or Andrews, authored the 2002 chapter discussed above. Krepkii's initials in the English publication are I.~A.; the paper's issue year is 2015 even though the online page bears a later date. Kneser's journal record is dated 1975 \cite{landau,landauzippel,honsbeek99,honsbeek,girstmair,bumby,elia,krepkii,kneser}.
+The publication history has been normalized as follows. Landau's FOCS paper is the 1989 contribution on pp.~314--319, grouped with the 1992 SIAM article. The ``Zippel denesting'' note is the 1992 journal article on pp.~41--45, not a later upload date and not pp.~41--46. Horng--Huang's 1999 paper occupies pp.~881--885, not 881--886. Honsbeek's 1999 report is distinguished from the 2005 thesis. Girstmair's preprint is dated 2020 and its journal version 2021. Bumby's paper is dated 1987, not 2024. Elia, not Berndt or Andrews, authored the 2002 chapter discussed above. Dokmeci's given name is Kaan and Rahal's is Sandra; advisers are not coauthors, and student reports are not journal articles. Krepkii's initials in the English publication are I.~A.; the paper's issue year is 2015 even though the online page bears a later date. Kneser's journal record is dated 1975 \cite{landau,landauzippel,hornghuang,honsbeek99,honsbeek,girstmair,bumby,elia,dokmeci,rahal,krepkii,kneser}.
 
 Where minor metadata conflicts remain in secondary records, the DOI or authoritative record is the reliable identifier; an unverified final page is not invented. The bibliography deliberately distinguishes the 1990 and 1999 Horng--Huang works while providing the latter DOI. Popularized paraphrases of their field hypotheses have not been substituted for the papers themselves.
 
@@ -927,6 +1080,10 @@ B. F. Caviness and R. J. Fateman. ``Simplification of radical expressions.'' In 
 Richard Zippel. \emph{Simplification of Radicals with Applications to Solving Polynomial Equations}. S.M. thesis, Massachusetts Institute of Technology, 1977. \status{A}
 \entrynote{Early thesis treatment of radical simplification. The related 1977 MACSYMA presentation ``Radical simplification made easy'' is a companion discovery lead, not a second independent modern completeness result.}
 
+\bibitem{zippel1977}
+Richard E. B. Zippel. \emph{Radical simplification made easy}. MACSYMA Users' Conference contribution, 1977; NASA Technical Reports Server record 19770021838. \url{https://ntrs.nasa.gov/citations/19770021838}. \status{A}
+\entrynote{Early account of manipulating nested and unnested radicals, retained separately from the master's thesis of the same year. The NASA record carries no downloadable file.}
+
 \bibitem{bfht}
 Allan Borodin, Ronald Fagin, John E. Hopcroft, and Martin Tompa. ``Decreasing the nesting depth of expressions involving square roots.'' \emph{Journal of Symbolic Computation} \textbf{1}(2) (1985), 169--188. \doi{10.1016/S0747-7171(85)80013-4}. Author copy: \url{https://www.cs.toronto.edu/~bor/Papers/decreasing-nesting-depth-for-expressions.pdf}. \status{F}
 \entrynote{The central square-root-denesting reference: structural reductions, fourth-root phenomena, and algorithms in a carefully specified representation model. The local sufficiency of fourth roots does not extend verbatim to arbitrarily deep square-root towers.}
@@ -938,6 +1095,10 @@ Richard Zippel. ``Simplification of expressions involving radicals.'' \emph{Jour
 \bibitem{landaumiller}
 Susan Landau and Gary L. Miller. ``Solvability by radicals is in polynomial time.'' \emph{Journal of Computer and System Sciences} \textbf{30}(2) (1985), 179--208. \status{A}
 \entrynote{A foundational computational Galois-theory result. Its problem is deciding solvability by radicals from a polynomial, not minimizing the depth of an already supplied radical expression. It helps explain the theoretical infrastructure of later denesting algorithms.}
+
+\bibitem{landaufactor}
+Susan Landau. ``Factoring polynomials over algebraic number fields.'' \emph{SIAM Journal on Computing} \textbf{14}(1) (1985), 184--195. \doi{10.1137/0214015}. \status{A}
+\entrynote{An algorithmic ingredient for field-based approaches; distinct from her denesting papers and from the Landau--Miller solvability paper.}
 
 \bibitem{landau}
 Susan Landau. ``Simplification of Nested Radicals.'' Conference version in \emph{30th Annual Symposium on Foundations of Computer Science}, 1989, pp.~314--319, \doi{10.1109/SFCS.1989.63496}; expanded journal version, \emph{SIAM Journal on Computing} \textbf{21}(1) (1992), 85--110, \doi{10.1137/0221009}. Institutional record: \url{https://fletcher.tufts.edu/research/research-publications/simplification-nested-radicals-0}. \status{A}
@@ -1011,6 +1172,14 @@ Martin Kneser. ``Lineare Abh\"angigkeit von Wurzeln.'' \emph{Acta Arithmetica} \
 Antonella Perucca. \emph{Linear relations among radicals}. arXiv:2511.02498, submitted November 4, 2025. \url{https://arxiv.org/abs/2511.02498}. \status{A}
 \entrynote{Recent structural work on linear relations in radical extensions. Potentially useful for dependency detection and basis design; the abstract does not by itself establish an implemented denesting algorithm.}
 
+\bibitem{lenstra06}
+H. W. Lenstra, Jr. \emph{Entangled Radicals}. AMS Colloquium Lectures, 2006. Lecture notes: \url{https://www.math.leidenuniv.nl/~hwl/papers/rad.pdf}. \status{L}
+\entrynote{Background on interactions among radical extensions and cyclotomic structure. A structural companion to the independence papers, not a documented production denester.}
+
+\bibitem{kluners}
+J\"urgen Kl\"uners. ``On computing subfields. A detailed description of the algorithm.'' \emph{Journal de Th\'eorie des Nombres de Bordeaux} \textbf{10}(2) (1998), 243--271. \url{https://jtnb.centre-mersenne.org/item/JTNB_1998__10_2_243_0/}. \status{A}
+\entrynote{Subfield computation as a practical component for discovering smaller radical representations; not itself a complete denester.}
+
 \bibitem{lll}
 A. K. Lenstra, H. W. Lenstra, Jr., and L. Lov\'asz. ``Factoring polynomials with rational coefficients.'' \emph{Mathematische Annalen} \textbf{261} (1982), 515--534. \doi{10.1007/BF01457454}. \status{A}
 \entrynote{The polynomial-time factorization result needed to distinguish rational-polynomial factorization from integer factorization. It supplies the complexity correction to the divisor-enumeration argument discussed in the cubic section.}
@@ -1026,6 +1195,10 @@ Louis Gaillard and Gorav Jindal. ``On the Order of Power Series and the Sum of S
 \bibitem{allender}
 Eric Allender, Peter B\"urgisser, Johan Kjeldgaard-Pedersen, and Peter Bro Miltersen. ``On the Complexity of Numerical Analysis.'' \emph{SIAM Journal on Computing} \textbf{38}(5) (2009), 1987--2006. \doi{10.1137/070697926}. \status{A}
 \entrynote{Background on algebraic computation and comparison complexity. Useful when assessing claims about numerical evaluation, sign testing, and the bit complexity hidden behind an exact algebraic representation.}
+
+\bibitem{exactgeometry}
+Chen Li, Sylvain Pion, and Chee-Keng Yap. ``Recent progress in exact geometric computation.'' \emph{Journal of Logic and Algebraic Programming} \textbf{64}(1) (2005), 85--111. \url{https://www.sciencedirect.com/science/article/pii/S1567832604000773}. \status{A}
+\entrynote{Application context for exact algebraic arithmetic, separation bounds, and reliable predicates, rather than radical presentation alone.}
 
 \bibitem{ramanujan}
 Srinivasa Ramanujan. \emph{Collected Papers}. Edited by G. H. Hardy, P. V. Seshu Aiyar, and B. M. Wilson. Cambridge University Press, 1927; later reprints. See also the published facsimiles of Ramanujan's notebooks. \status{L}
@@ -1071,6 +1244,10 @@ Thomas J. Osler. \emph{An easy look at the cubic formula}. Expository author man
 Roman Witu\l a and Damian S\l ota. ``Cardano's formula, square roots, Chebyshev polynomials and radicals.'' \emph{Journal of Mathematical Analysis and Applications} \textbf{363} (2010), 639--647. \status{A}
 \entrynote{Connects cubic formulas, polynomial identities, and radical representations. A useful companion to Osler, not a substitute for unrestricted radical-depth theory.}
 
+\bibitem{shevelev}
+Vladimir Shevelev. \emph{On Ramanujan cubic polynomials}. arXiv:0711.3420, 2007. \url{https://arxiv.org/abs/0711.3420}. \status{A}
+\entrynote{Ramanujan cubic polynomials and associated radical identities. Useful before the cyclic-cubic and Shanks-polynomial connection in the next entry.}
+
 \bibitem{barbero}
 Stefano Barbero, Umberto Cerruti, Nadir Murru, and Marco Abrate. ``Identities involving zeros of Ramanujan and Shanks cubic polynomials.'' \emph{Journal of Integer Sequences} \textbf{16} (2013), article~13.8.1. \status{A}
 \entrynote{Studies structured cubic polynomial families underlying radical identities. The bibliographic identity is also corroborated by the references in Antipov--Pimenov.}
@@ -1098,6 +1275,10 @@ Eleftherios Gkioulekas. ``On the denesting of nested square roots.'' \emph{Inter
 \bibitem{dokmeci}
 Kaan Dokmeci. \emph{Theorems on Field Extensions and Radical Denesting}. MIT PRIMES research report, September 26, 2017. \url{https://math.mit.edu/research/highschool/primes/materials/2017/Dokmeci.pdf}. \status{F}
 \entrynote{An accessible research exposition connecting field extensions and denesting. Identified as a student research report, not a journal article. Useful as a route into the underlying algebra.}
+
+\bibitem{rahal}
+Sandra Rahal. \emph{Introduction to Nested Radicals}. Bachelor's thesis, Stockholm University, report 2017:17, 2017. \url{https://kurser.math.su.se/pluginfile.php/16103/mod_folder/content/0/2017/2017_17_report.pdf}. \status{A}
+\entrynote{Introductory thesis lead on nested radicals. Institutional metadata were checked; the adviser is not a coauthor and no result of the thesis is used as the basis of a theorem claim here.}
 
 \bibitem{campbell}
 Geoffrey B. Campbell and Aleksander Zujev. \emph{Variations on Ramanujan's nested radicals}. arXiv:1511.06865, 2015. \url{https://arxiv.org/abs/1511.06865}. \status{F}
@@ -1179,6 +1360,18 @@ Henri Cohen. \emph{A Course in Computational Algebraic Number Theory}. Graduate 
 David A. Cox. \emph{Galois Theory}. Second edition, Wiley, 2012. \status{L}
 \entrynote{A route to the algebraic prerequisites: field extensions, roots of unity, solvable groups, and radical solutions. Useful before reading Landau or Honsbeek.}
 
+\bibitem{newman}
+Stephen C. Newman. \emph{A Classical Introduction to Galois Theory}. Wiley, 2012. \status{L}
+\entrynote{An additional route into the field-theoretic language used throughout the denesting literature.}
+
+\bibitem{euclid}
+Euclid. \emph{Elements}, Book~X. \status{L}
+\entrynote{Historical background on irrational magnitudes and quadratic constructions. Modern degree-reduction results should be attributed to their modern authors, such as Girstmair.}
+
+\bibitem{guin}
+Dominique Guin, Kenneth Ruthven, and Luc Trouche (eds.). \emph{The Didactical Challenge of Symbolic Calculators}. Springer, 2005. \status{L}
+\entrynote{Pedagogical context for interpreting CAS output. Retained as an educational resource, not as a source of structural denesting theorems.}
+
 \bibitem{sympy}
 SymPy development team. ``Simplify,'' official documentation, especially \texttt{sqrtdenest}, \texttt{radsimp}, and \texttt{nthroot}. \url{https://docs.sympy.org/latest/modules/simplify/simplify.html}. \status{D}
 \entrynote{Documents the purpose, parameters, examples, and limitations of the public routines. The local experiments used SymPy 1.14.0; a moving ``latest'' page is not a substitute for recording that exact version.}
@@ -1187,6 +1380,10 @@ SymPy development team. ``Simplify,'' official documentation, especially \texttt
 SymPy development team. Source code and tests for \texttt{sqrtdenest}. \url{https://github.com/sympy/sympy/blob/master/sympy/simplify/sqrtdenest.py}; \url{https://github.com/sympy/sympy/blob/master/sympy/simplify/tests/test_sqrtdenest.py}. \status{D}
 \entrynote{Primary implementation evidence, including algorithmic references, special cases, and test examples. These links track the development branch; the attached execution transcript fixes the version actually run.}
 
+\bibitem{sympytests}
+SymPy development team. Regression tests \texttt{test\_sqrtdenest.py}. \url{https://github.com/sympy/sympy/blob/1.14.0/sympy/simplify/tests/test_sqrtdenest.py}. \status{D}
+\entrynote{A useful source of deeper, multiquadratic, and cancellation examples. A test suite documents cases, not mathematical completeness.}
+
 \bibitem{sympyissues}
 SymPy issue tracker. Denesting-related discussions, issues \#2415 and \#27082. \url{https://github.com/sympy/sympy/issues/2415}; \url{https://github.com/sympy/sympy/issues/27082}. \status{D}
 \entrynote{Useful historical and practical test-case leads. An issue report alone does not prove that a defect persists in a later release, and an issue's example should be rerun before making a current capability claim.}
@@ -1194,6 +1391,14 @@ SymPy issue tracker. Denesting-related discussions, issues \#2415 and \#27082. \
 \bibitem{maxima}
 \texttt{gschintgen/raddenest}. Maxima add-on package, documentation, and source. \url{https://github.com/gschintgen/raddenest}. \status{D}
 \entrynote{The README describes substantial lineage from SymPy 1.0, while the package documentation includes selected additional higher-root routines. Thus ``only a square-root port'' is incomplete. Maxima was not executed during this synthesis.}
+
+\bibitem{maximamanual}
+Maxima developers. \emph{Maxima Manual}. \url{https://maxima.sourceforge.io/docs/manual/maxima_singlepage.html}. \status{L}
+\entrynote{Reference directory for \texttt{radcan}, radical expansion, and installed package interfaces. Legacy \texttt{sqdnst}/\texttt{sqrtdenest} release-history claims were not independently settled.}
+
+\bibitem{maximathread}
+Gilles Schintgen and participants. \texttt{raddenest} announcement and discussion, \emph{maxima-discuss}, 2017. \url{https://sourceforge.net/p/maxima/mailman/maxima-discuss/thread/o6lan6\%24h4r\%241\%40blaine.gmane.org/}; mirror \url{https://maxima-discuss.narkive.com/rz7bUs4t/denesting}. \status{L}
+\entrynote{Historical development context. The package source, not a historical message alone, is the main evidence for the capabilities described in this report.}
 
 \bibitem{wolframroot}
 Wolfram Research. \texttt{RootReduce}, Wolfram Language documentation. \url{https://reference.wolfram.com/language/ref/RootReduce.html}. \status{D}
@@ -1231,6 +1436,10 @@ FLINT development team. ``\texttt{qqbar.h} -- algebraic numbers,'' documentation
 FLINT/Calcium development team. ``\texttt{ca.h} -- exact complex numbers,'' especially \texttt{ca\_sqrt\_factor}, documentation served as FLINT 3.7.0-dev. \url{https://flintlib.org/doc/ca.html}. \status{D}
 \entrynote{Documents square-root simplification by factorization and extraction of square parts, together with branch selection. This is useful denesting-adjacent machinery, not an advertised global minimum-depth procedure.}
 
+\bibitem{magma}
+Magma Computational Algebra System. \emph{Handbook} and number-field release notes. \url{https://magma.maths.usyd.edu.au/magma/handbook/}. \status{D}
+\entrynote{Optimized field representations and related operations concern defining data. The record is not used to assert the absence of every radical simplification facility.}
+
 \bibitem{fricas}
 FriCAS developer discussion. Radical simplification, \texttt{recursiveRootSimplification}, and \texttt{rsimp}. \url{https://groups.google.com/g/fricas-devel/c/7Kp0vVbPXJE}. \status{D}
 \entrynote{A developer-level implementation lead retained from the reports. It supports the existence of relevant routines and discussion, not an independent benchmark or a complete public specification of all supported inputs.}
@@ -1258,6 +1467,18 @@ Mathematics Stack Exchange. Discussions on denesting radicals, including threads
 \bibitem{mo}
 MathOverflow. Research discussions on radical denesting and related algorithms, threads 319874, 410388, and 344478. \url{https://mathoverflow.net/questions/319874}; \url{https://mathoverflow.net/questions/410388}; \url{https://mathoverflow.net/questions/344478}. \status{D}
 \entrynote{Useful for locating research literature, understanding practical questions, and identifying caveats. Statements that something is ``open'' or ``unimplemented'' require a precise scope and cannot automatically be promoted to a universal current claim.}
+
+\bibitem{oeis}
+OEIS Foundation Inc. and contributors. \emph{A135611}, decimal expansion of $\sqrt2+\sqrt3$. \url{https://oeis.org/A135611}. \status{A}
+\entrynote{A sequence entry and pointer to related representations, not a research paper.}
+
+\bibitem{tiwari}
+Gaurav Tiwari. \emph{Complete elementary analysis of Ramanujan's nested radicals}, web exposition. \url{https://gauravtiwari.org/projects-ramanujan-nested-radical/}. \status{L}
+\entrynote{Author-hosted educational resource covering denesting and infinite radicals. No convergence theorem is imported from it without its hypotheses.}
+
+\bibitem{infiniteblogs}
+Ancillary infinite-radical exposition: Ujjwal Singh, ``Ramanujan's nested radical problem,'' \emph{Cantor's Paradise}, \url{https://www.cantorsparadise.com/ramanujans-nested-radical-problem-f14c3060e495}; Archie G. Smith, ``Calculus of infinite nested radicals,'' \url{https://medium.com/@ArchieGSmith/calculus-of-infinite-nested-radicals-1ab3e1d26774}; Mathematics Stack Exchange question 4049946, \url{https://math.stackexchange.com/questions/4049946}. \status{L}
+\entrynote{Informal leads retained from the supplied material. They are not used to support the finite-denesting criteria or complexity claims.}
 
 \end{thebibliography}
 \end{document}

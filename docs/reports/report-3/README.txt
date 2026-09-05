@@ -1,10 +1,19 @@
 RADICAL DENESTING: A UNIFIED RESEARCH GUIDE
 Research cutoff: September 5, 2026
 
+This directory is the single unified report on the radical-denesting
+literature. It was originally one of three unified reports prepared
+independently from the same four-report corpus (docs/reports/report-1,
+report-2 and report-3). On September 5, 2026 the other two were merged into
+this one: their overlapping exposition was consolidated, their unique
+material, bibliography entries and verification checks were retained, and
+the two source directories were deleted. Section 1.4 of the report lists
+what was folded in from each.
+
 CONTENTS
 
 radical_denesting_unified.pdf
-    The unified report: 45 pages and 86 annotated bibliography entries.
+    The unified report, with annotated bibliography (103 entries).
 
 radical_denesting_unified.tex
     Complete, self-contained LaTeX source. Bibliographic entries are embedded
@@ -12,66 +21,57 @@ radical_denesting_unified.tex
     needed to compile it.
 
 verify.py
-    Reproducible exact mathematical checks and selected observed SymPy
-    sqrtdenest outputs. Includes a restricted cubic-in-quadratic denesting
-    procedure. This is not a general denesting implementation.
+    Merged exact-check script: the checks of all three unified reports
+    (polynomial-remainder certificates for the identities, the restricted
+    cubic-in-quadratic criterion with a 210-case constructed sweep, Honsbeek's
+    quartic certificate, minimal-polynomial checks) plus recorded SymPy
+    sqrtdenest and nthroot observations. Not a general denesting implementation.
 
 verification_results.txt
-    Execution transcript: 26 exact checks passed under Python 3.13.5 and
-    SymPy 1.14.0. No other CAS was executed for this report.
+    Execution transcript of verify.py (Python 3.14.4, SymPy 1.14.0).
+
+verification_results.json
+    Machine-readable record of the same run, including the observed SymPy outputs.
 
 source_inventory.tsv
     Names, byte lengths, SHA-256 hashes, and roles of all 10 non-directory
-    members of the supplied reports.zip archive. They comprise four reports
-    plus alternate renderings and illustrations, not ten independent reports.
+    members of the supplied reports.zip archive (four reports plus alternate
+    renderings and illustrations).
 
 source_links.tsv
     A deduplicated provenance register of literal HTTP(S) links found in the
-    four supplied Markdown reports. Formatting escapes are normalized in the
-    URL column; the literal_variants column preserves the original spellings.
-    Bibliographic records expressed only through the original assistants'
-    opaque citation markers are not recoverable as URLs by this extraction.
-    Inclusion here is NOT independent endorsement or a successful-link test.
-    The report's annotated bibliography is the curated source guide, and
-    contains additional sources not present in this input-link register.
+    four supplied Markdown reports. Inclusion is NOT independent endorsement
+    or a successful-link test.
 
 quality_checks.txt
-    Build, citation, PDF, and computation checks performed for the release.
-
-SHA256SUMS.txt
-    SHA-256 hashes of the release files other than this checksum file.
+    Build, citation, and computation checks performed for this edition.
 
 BUILDING THE PDF
 
-Use a recent TeX Live installation (or an equivalent LaTeX distribution).
-From the directory containing the .tex file, run:
+From the directory containing the .tex file, run pdflatex three times:
 
     pdflatex -interaction=nonstopmode -halt-on-error radical_denesting_unified.tex
-    pdflatex -interaction=nonstopmode -halt-on-error radical_denesting_unified.tex
-    pdflatex -interaction=nonstopmode -halt-on-error radical_denesting_unified.tex
 
-Three runs settle the table of contents, citations, and cross-references.
-Alternatively:
-
-    latexmk -pdf radical_denesting_unified.tex
+Alternatively: latexmk -pdf radical_denesting_unified.tex
 
 The source uses the standard article class and packages including newpxtext,
 newpxmath, amsmath, amsthm, mathtools, geometry, microtype, booktabs, longtable,
 enumitem, xcolor, fancyhdr, titlesec, listings, xurl, hyperref, bookmark, and
-etoolbox. No shell escape or network access is required. Fonts are supplied
-by the TeX distribution, not included in this archive.
+etoolbox. No shell escape or network access is required.
 
 RUNNING THE EXACT CHECKS
 
-Python 3.10 or later is required. For the tested SymPy version:
+Python 3.10 or later and SymPy are required (recorded run: SymPy 1.14.0):
 
-    python -m pip install sympy==1.14.0
     python verify.py
 
 Polynomial reduction proves the selected algebraic identities; separate
 rational inequalities select the even-root branches. The non-denesting
 interpretation of some cases relies on the cited structural theorems, not
-on a claim that the script implements those theorems.
+on a claim that the script implements those theorems. A None result of the
+cubic-in-quadratic routine means that the specified quadratic-field
+representation fails, not that every unnested radical representation is
+impossible.
 
 EDITORIAL AND EVIDENCE NOTES
 
@@ -85,13 +85,12 @@ from minimum-depth optimization, and real from complex branch conventions.
 Access labels in the bibliography distinguish inspected relevant full text,
 authoritative metadata or abstracts, documentation or author source, and
 retained background or unresolved leads. Full-text inspection does not mean
-that every theorem in a source was independently verified. The report is
-not claimed to be an exhaustive bibliography. Sources behind access barriers
-are not described as having been fully read. Proprietary or unavailable CAS
-examples are explicitly labeled unexecuted.
+that every theorem in a source was independently verified. The report is not
+claimed to be an exhaustive bibliography. Only SymPy was executed; other CAS
+examples are documented usage, explicitly labeled unexecuted.
 
-No copies of third-party papers, input reports, or font files are distributed
-in this release. Consult the bibliography for their source locations.
+The freely available literature cited here has been collected separately in
+docs/literature (see docs/scripts/README.md for how it was obtained).
 
 INPUT ARCHIVE
 
