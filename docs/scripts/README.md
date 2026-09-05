@@ -48,13 +48,14 @@ Berkeley host, a script-rendered landing page (Siegel), a NASA record with no
 file, and web pages that refuse non-browser clients. Console logs of both passes
 are `docs/literature/run_pass1.txt` and `run_pass2.txt`.
 
-Three files obtained by hand were then registered with
+One file obtained by hand was then registered with
 `radical_literature_retrieval_package/register_manual_file.py`, which copies a
 file into the record's version folder and updates the manifest with its
 SHA-256 and origin: the Internet Archive scan of Fateman's MIT-LCS-TR-095 (a
-different scan from the CSAIL copy), Landau's FOCS 1989 extended abstract (the
-SIAM 1992 article itself remains unavailable), and the published 2017 version of
-Gkioulekas. Final tally: 97 assets, 51 PDFs, 44 TeX files, 65 works.
+different scan from the CSAIL copy). The re-typeset articles under
+`docs/articles/*/` (Landau 1989, Gkioulekas 2017, and others) are kept there
+only, not duplicated in the dataset. Final tally: 95 assets, 49 PDFs, 44 TeX
+files, 64 works.
 
 ## How the files were obtained
 
