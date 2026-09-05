@@ -51,7 +51,9 @@ exact algebra (`RootReduce` or `PossibleZeroQ` with
 cost or is the input itself, and the search stops within a trial or time
 budget. Public symbols: `Strad`, `DenestRadicals`, `DenestCore`,
 `RationalizeDenominator`, `Factorc`, `RadicalDepth`, `RadicalCost`,
-`ExactAlgebraicQ`, `CertifiedEqualQ`. See `src/corrected/README.md` for usage.
+`ExactAlgebraicQ`, `CertifiedEqualQ`. See `src/corrected/README.md` for usage
+and `src/corrected/KNOWN_GAPS.md` for the denestable inputs it is known to
+leave unchanged, with diagnoses and proposed fixes.
 
 ## The code review (`src/code-review/`)
 

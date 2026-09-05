@@ -12,7 +12,9 @@ Main deliverables:
   `../../corrected/StradFixed.wl`.
 - `tables/*.tex` — result tables generated mechanically by
   `harness/export_tables.wl` from the recorded runs.
-- `harness/` — all Wolfram scripts used for the experiments.
+- `harness/` — all Wolfram scripts used for the experiments, including the
+  four probing scripts `probe_gaps_*.wl` that search for denestable inputs
+  the corrected version misses (findings in `src/corrected/KNOWN_GAPS.md`).
 - `logs/` — the raw outputs of every run reported in the document.
 
 The corrected implementation itself is `src/corrected/StradFixed.wl`. The
