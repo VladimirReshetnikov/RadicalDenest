@@ -26,11 +26,17 @@ import time
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
-from urllib.request import Request, build_opener, HTTPRedirectHandler
+from urllib.request import Request, build_opener, HTTPRedirectHandler, HTTPSHandler
+import ssl
 from html.parser import HTMLParser
 import zipfile
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+
+# Console streams on Windows may default to a legacy code page; titles contain characters such as the radical sign.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, 'reconfigure'):
+        _stream.reconfigure(encoding='utf-8', errors='replace')
 USER_AGENT = 'RadicalBibliographyDownloader/1.0 (personal scholarly retrieval; Python urllib)'
 SOURCE_LIMIT = 512 * 1024 * 1024
 MEMBER_LIMIT = 20000
@@ -79,10 +85,21 @@ class SafeRedirects(HTTPRedirectHandler):
 
 
 class Fetcher:
-    def __init__(self, timeout: float, retries: int, max_bytes: int, delay: float):
+    def __init__(self, timeout: float, retries: int, max_bytes: int, delay: float,
+                 insecure_hosts: set[str] | None = None, insecure_all: bool = False,
+                 user_agent: str = USER_AGENT):
         self.timeout, self.retries = timeout, retries
         self.max_bytes, self.delay = max_bytes, delay
         self.opener = build_opener(SafeRedirects())
+        # Opt-in only: hosts whose certificate chain is not trusted by this Python
+        # (for example a root missing from the local store). Recorded in provenance.
+        self.insecure_hosts = {h.lower() for h in (insecure_hosts or set())}
+        self.insecure_all = insecure_all
+        self.user_agent = user_agent
+        unverified = ssl.create_default_context()
+        unverified.check_hostname = False
+        unverified.verify_mode = ssl.CERT_NONE
+        self.insecure_opener = build_opener(SafeRedirects(), HTTPSHandler(context=unverified))
         self.last_request: dict[str, float] = {}
         self.log: list[dict[str, Any]] = []
 
@@ -99,8 +116,10 @@ class Fetcher:
             self.last_request[bucket] = time.monotonic()
             event: dict[str, Any] = {'time': utcnow(), 'url': url, 'attempt': attempt + 1}
             try:
-                req = Request(url, headers={'User-Agent': USER_AGENT, 'Accept': '*/*', 'Accept-Encoding': 'identity'})
-                with self.opener.open(req, timeout=self.timeout) as response:
+                req = Request(url, headers={'User-Agent': self.user_agent, 'Accept': '*/*', 'Accept-Encoding': 'identity'})
+                skip_tls = self.insecure_all or host.lower() in self.insecure_hosts
+                opener = self.insecure_opener if skip_tls else self.opener
+                with opener.open(req, timeout=self.timeout) as response:
                     final_url = checked_url(response.geturl())
                     declared = response.headers.get('Content-Length', '')
                     if declared.isdigit() and int(declared) > self.max_bytes:
@@ -116,8 +135,10 @@ class Fetcher:
                     meta = {'requested_url': url, 'resolved_url': final_url,
                             'retrieved_at': utcnow(), 'http_status': response.status,
                             'content_type': response.headers.get('Content-Type', ''),
+                            'user_agent': self.user_agent,
                             'content_encoding': response.headers.get('Content-Encoding', ''),
-                            'bytes': len(data), 'sha256': digest(data)}
+                            'bytes': len(data), 'sha256': digest(data),
+                            'tls_verification': ('SKIPPED by --insecure' if self.insecure_all else 'SKIPPED by --insecure-hosts') if skip_tls else 'verified'}
                     # HTTP transfer compression is separate from a gzip source file.
                     if meta['content_encoding'].lower() == 'gzip':
                         with gzip.GzipFile(fileobj=io.BytesIO(data)) as gz:
@@ -489,6 +510,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument('--retries', type=int, default=1)
     p.add_argument('--max-mb', type=float, default=256.0)
     p.add_argument('--delay', type=float, default=0.5)
+    p.add_argument('--insecure-hosts', default='', help='Comma-separated hosts for which TLS certificate verification is skipped (opt-in; recorded in provenance).')
+    p.add_argument('--user-agent', default=USER_AGENT, help='User-Agent header to send (recorded in provenance). Some public sites reject non-browser agents.')
+    p.add_argument('--insecure', action='store_true', help='Skip TLS certificate verification for ALL hosts (recorded in provenance). Use only when the local trust store is known to be incomplete.')
     args = p.parse_args(argv)
     if args.timeout <= 0 or args.retries < 0 or args.max_mb <= 0 or args.delay < 0:
         p.error('Timeout/size must be positive; retries/delay must be nonnegative.')
@@ -522,7 +546,8 @@ def main(argv: list[str] | None = None) -> int:
     if output == SCRIPT_DIR:
         p.error('--output must be a separate directory, not the retrieval-package directory itself.')
     output.mkdir(parents=True, exist_ok=True)
-    fetcher = Fetcher(args.timeout, args.retries, int(args.max_mb * 1024 * 1024), args.delay)
+    fetcher = Fetcher(args.timeout, args.retries, int(args.max_mb * 1024 * 1024), args.delay,
+                      set(filter(None, args.insecure_hosts.split(','))), args.insecure, args.user_agent)
     results: list[dict[str, Any]] = []
     start = utcnow()
     interrupted = False
