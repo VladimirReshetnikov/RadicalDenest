@@ -1,0 +1,22 @@
+# Unified analysis of `Strad.wl`
+
+Main deliverables:
+
+- `unified_analysis.pdf` — the report (compare the three reviews, reconstruct the
+  algorithm, prove the supporting mathematics, execute the program and the
+  reviews' test suites in Wolfram 15.0.1, catalogue 27 defects, present and
+  evaluate the corrected implementation, list future improvements).
+- `unified_analysis.tex` plus `sec_*.tex`, `app_listings.tex` — LaTeX source.
+  Build with `pdflatex` (three passes) from this directory; the listings
+  appendix reads `../../src/original/Strad.wl` and
+  `../../src/corrected/StradFixed.wl`.
+- `tables/*.tex` — result tables generated mechanically by
+  `harness/export_tables.wl` from the recorded runs.
+- `harness/` — all Wolfram scripts used for the experiments.
+- `logs/` — the raw outputs of every run reported in the document.
+
+The corrected implementation itself is `src/corrected/StradFixed.wl`.
+
+Kernel used for every execution: 15.0.1 for Microsoft Windows (64-bit)
+(July 2, 2026). The scripts contain absolute paths at their top; adjust them
+before re-running.
