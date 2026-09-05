@@ -1,0 +1,57 @@
+{
+  "python": "3.13.5",
+  "sympy": "1.14.0",
+  "status": "all exact assertions passed",
+  "observations": [
+    {
+      "test": "direct square roots",
+      "function": "sqrtdenest",
+      "output": "sqrt(2) + sqrt(3)"
+    },
+    {
+      "test": "principal-root sign",
+      "function": "sqrtdenest",
+      "output": "-1 + sqrt(2)"
+    },
+    {
+      "test": "fourth roots",
+      "function": "sqrtdenest",
+      "output": "2**(3/4)*(sqrt(2) + 2)/2"
+    },
+    {
+      "test": "depth three to two",
+      "function": "sqrtdenest",
+      "output": "sqrt(11 - 2*sqrt(29)) + sqrt(5)"
+    },
+    {
+      "test": "multiquadratic input",
+      "function": "sqrtdenest",
+      "output": "sqrt(10) + 5 + 4*sqrt(2) + 3*sqrt(5)"
+    },
+    {
+      "test": "cancellation across terms",
+      "function": "sqrtdenest",
+      "output": "0"
+    },
+    {
+      "test": "unchanged example (not itself a proof)",
+      "function": "sqrtdenest",
+      "output": "sqrt(sqrt(2) + 2)"
+    },
+    {
+      "test": "cubic quadratic 1",
+      "function": "nthroot",
+      "output": "1 + sqrt(2)"
+    },
+    {
+      "test": "cubic quadratic 2",
+      "function": "nthroot",
+      "output": "sqrt(7) + 3"
+    },
+    {
+      "test": "negative real fifth root",
+      "function": "nthroot",
+      "output": "1 - sqrt(2)"
+    }
+  ]
+}

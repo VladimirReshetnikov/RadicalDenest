@@ -1,0 +1,18 @@
+RELEASE QUALITY CHECKS — September 5, 2026
+
+PDF: 45 pages, selectable text, embedded hyperlinks, no encryption.
+Bibliography: 86 entries; every citation key resolves.
+Cross-references: every referenced label resolves.
+Clean build: LaTeX source alone compiled successfully in a fresh directory.
+Final clean-build log: no LaTeX warnings, errors, or overfull boxes.
+Clean-build and release PDFs have identical page text and page counts.
+Visual review: all final pages reviewed in rendered contact sheets, with
+selected equation and table pages inspected at higher resolution.
+No clipping, overlapping text, or broken glyphs was observed.
+No empty PDF pages or Unicode replacement characters found in extracted text.
+Exact computation: 26 checks passed under Python 3.13.5 / SymPy 1.14.0.
+Source inventory: all 10 non-directory input archive members recorded.
+Input-link register: 84 normalized URLs preserving 90 literal variants.
+
+These are release checks, not an independent proof of every cited theorem,
+a complete bibliography audit, or a benchmark of unexecuted CAS software.

@@ -1,0 +1,42 @@
+Python: 3.13.5
+SymPy: 1.14.0
+All arithmetic below is exact.
+
+PASS  direct example (sqrt(2)+sqrt(3))^2
+PASS  indirect example [2^(1/4)*(1+sqrt(2))]^2
+PASS  sqrt(2+sqrt(2)): direct norm not a rational square
+PASS  sqrt(2+sqrt(2)): indirect norm negative
+PASS  Ramanujan cubic: (1-t+t^2)^3=9(t-1)
+PASS  Ramanujan cubic: positive quadratic decomposition
+PASS  sqrt(cbrt(28)-3): square identity
+PASS  sqrt(cbrt(28)-3): candidate sign by rational bounds
+PASS  sqrt(cbrt(5)-cbrt(4)): square identity
+PASS  sqrt(cbrt(5)-cbrt(4)): candidate positive by rational bounds
+PASS  Honsbeek quartic identity
+PASS  Honsbeek (-4,5) ratio has rational quartic root 1
+PASS  Honsbeek swapped (5,-4) ratio has rational quartic root -2
+PASS  Ramanujan fourth-root identity: cross multiplication
+PASS  Ramanujan fourth-root identity: rationalized form
+PASS  Ramanujan fourth-root identity: denominator positive
+PASS  Ramanujan sixth-root identity
+PASS  Ramanujan sixth-root identity: positive candidate
+PASS  real fifth root of 41-29*sqrt(2)
+PASS  real fifth-root candidate is negative
+PASS  trace-norm certificate polynomial
+PASS  restricted cubic denesting 7+5*sqrt(2)
+PASS  restricted cubic denesting 85+62*sqrt(7)
+PASS  cube norm alone is insufficient (1+sqrt(2))
+PASS  minimal polynomial of sqrt(2)+sqrt(3)
+PASS  different conjugate has same minimal polynomial
+
+Observed sqrtdenest outputs (not completeness claims):
+ input : sqrt(2*sqrt(6) + 5)
+ output: sqrt(2) + sqrt(3)
+ input : sqrt(4 + 3*sqrt(2))
+ output: 2**(3/4)*(sqrt(2) + 2)/2
+ input : sqrt(sqrt(2) + 2)
+ output: sqrt(sqrt(2) + 2)
+ input : sqrt(-2*sqrt(29) + 2*sqrt(55 - 10*sqrt(29)) + 16)
+ output: sqrt(11 - 2*sqrt(29)) + sqrt(5)
+
+26 exact checks passed.
