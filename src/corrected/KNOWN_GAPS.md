@@ -1,11 +1,17 @@
 # Denestable inputs that `StradFixed.wl` does not denest
 
+> Status (5 September 2026, later the same day): all fifteen inputs below are
+> denested by the second corrected version `StradFixed2.wl`; see
+> `src/code-review/unified-B/unified_analysis_B.pdf`, Section 7.4, and the
+> `G-*` tests of `src/code-review/unified-B/tests/StradFixed2.wlt`. This file
+> describes the first corrected version.
+
 Findings of a probing session on 5 September 2026 (Wolfram 15.0.1). Four
 batteries of denestable inputs taken from the literature guide
 (`docs/report`) and from constructed identities were run through `Strad` of
 the corrected package with a 400 s wall limit per input. The scripts are
-`src/code-review/unified/harness/probe_gaps_{1,2,3,4}.wl`, the transcripts
-`src/code-review/unified/logs/probe_gaps_{1,2,3,4}.txt` (the fourth run was
+`src/code-review/unified-A/harness/probe_gaps_{1,2,3,4}.wl`, the transcripts
+`src/code-review/unified-A/logs/probe_gaps_{1,2,3,4}.txt` (the fourth run was
 stopped by hand after its timing section). Every returned value was checked
 against the input with `RootReduce`; no wrong value was returned anywhere.
 

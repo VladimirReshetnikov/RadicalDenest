@@ -1,4 +1,13 @@
-# Unified analysis of `Strad.wl`
+# Unified analysis of `Strad.wl` (first round, "unified-A")
+
+This is the first unified analysis: it compares the three reviews of the
+original program (then kept as `review-1`, `review-2` and `review-3`; those
+directories were later removed from the repository, and the reviews are
+described in Section 3 of the report), evaluates the program in a kernel, and
+presents the first corrected version `src/corrected/StradFixed.wl`. That
+version was in turn reviewed three times (`../review-4`, `../review-5`,
+`../review-6`) and probed (`src/corrected/KNOWN_GAPS.md`); the second round is
+`../unified-B`, which presents `src/corrected/StradFixed2.wl`.
 
 Main deliverables:
 

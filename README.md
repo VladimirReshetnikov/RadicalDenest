@@ -6,11 +6,11 @@ program that denests radicals: it rewrites an expression such as
 `(1 - 2^(1/3) + 4^(1/3))/9^(1/3)`, whenever an expression with fewer nested
 root extractions exists and can be found.
 
-The repository has three parts: the program and its corrected version (`src/`),
-a code review of the program built from three independent reviews plus
-kernel experiments (`src/code-review/`), and a research guide to the
-mathematical and computer-algebra literature on radical denesting together with
-the freely available sources themselves (`docs/`).
+The repository has three parts: the program and its corrected versions
+(`src/`), two rounds of code review with kernel experiments
+(`src/code-review/`), and a research guide to the mathematical and
+computer-algebra literature on radical denesting together with the freely
+available sources themselves (`docs/`).
 
 ## Layout
 
@@ -20,58 +20,77 @@ the freely available sources themselves (`docs/`).
 ├── README.md                     this file (AGENTS.md and CLAUDE.md are symlinks to it)
 ├── src/
 │   ├── original/Strad.wl         the program under review, unchanged (585 lines)
-│   ├── corrected/StradFixed.wl   corrected and hardened version, context RadicalDenest`
+│   ├── corrected/
+│   │   ├── StradFixed.wl         first corrected version (context RadicalDenest`)
+│   │   ├── StradFixed2.wl        second corrected version, current (context RadicalDenest2`)
+│   │   └── KNOWN_GAPS.md         inputs the first version misses; all handled by the second
 │   └── code-review/
-│       ├── review-1/             three independent reviews of Strad.wl, each with
-│       ├── review-2/             its own report (PDF + LaTeX), test suite and
-│       ├── review-3/             proposed replacement kernel
-│       └── unified/              unified analysis: report, LaTeX source, Wolfram
-│                                 harness, raw logs, generated result tables
+│       ├── unified-A/            first round: analysis of Strad.wl from three reviews of it
+│       │                         (those reviews are no longer in the repository), kernel
+│       │                         experiments, and StradFixed.wl
+│       ├── review-4/             three independent reviews of StradFixed.wl, each with a
+│       ├── review-5/             report (PDF + LaTeX), a proposed replacement
+│       ├── review-6/             StradImproved.wl, a native test suite and SymPy checks
+│       └── unified-B/            second round: the three reviews compared and consolidated,
+│                                 StradFixed2.wl designed and evaluated, regression suite
 └── docs/
     ├── report/                   unified research guide to the denesting literature
     ├── literature/               downloaded papers, theses, documentation, web resources
     └── scripts/                  the download tooling that produced docs/literature
 ```
 
-## The program and its correction (`src/`)
+## The program and its corrections (`src/`)
 
 `src/original/Strad.wl` is the input to the whole project. Its architecture is
 a marker wrapper around radicals, a multiplier search using minimal polynomials
 and polynomial GCDs over algebraic extensions, a roots-of-unity orbit over the
-candidates, and a final numerical check. The reviews and experiments found
+candidates, and a final numerical check. The first round of review found
 defects in each stage: loss of the principal branch when a power is
 re-extracted, branch-unsafe power identities, results accepted on the strength
 of `PossibleZeroQ` "assuming zero" messages, a comparator that reverses lists,
 unbounded searches, and silent failures on symbolic input.
 
-`src/corrected/StradFixed.wl` keeps the architecture but makes correctness
-independent of the heuristics. Every result is certified equal to the input by
-exact algebra (`RootReduce` or `PossibleZeroQ` with
-`Method -> "ExactAlgebraics"`), is strictly simpler under an explicit radical
-cost or is the input itself, and the search stops within a trial or time
-budget. Public symbols: `Strad`, `DenestRadicals`, `DenestCore`,
-`RationalizeDenominator`, `Factorc`, `RadicalDepth`, `RadicalCost`,
-`ExactAlgebraicQ`, `CertifiedEqualQ`. See `src/corrected/README.md` for usage
-and `src/corrected/KNOWN_GAPS.md` for the denestable inputs it is known to
-leave unchanged, with diagnoses and proposed fixes.
+`src/corrected/StradFixed.wl` kept the architecture but certified every result
+against the input by exact algebra. Three further reviews and a probing session
+then found that its certification did not cover a user-supplied solver in a
+symbolic host, that its budgets did not bound whole calls, that its option
+defaults were not propagated, that its multiplier cap leaked, and that fifteen
+denestable inputs were left unchanged.
 
-## The code review (`src/code-review/`)
+`src/corrected/StradFixed2.wl` is the current version. It puts one acceptance
+gate in front of every candidate, runs each call inside one time and memory
+region with every expensive kernel operation bounded, resolves and validates
+options once, replaces the marker wrapper and the custom factorizer by a
+congruence walk over arithmetic hosts, adds exact fast paths (direct, indirect,
+Gaussian, cubic-in-quadratic, Honsbeek, multi-surd), separates the phase of
+negative radicands, uses the linear factors of `x^k - rho` for Kummer roots and
+index reduction, bounds the multiplier queue at a single admission point, and
+returns structured reports. See `src/corrected/README.md` for usage and the
+option list.
 
-`review-1`, `review-2` and `review-3` are three independent reviews of the
-original program, each with a PDF report and LaTeX source, a copy of the
-reviewed file, a Wolfram test suite and a proposed safer kernel. They were the
-starting material for the unified analysis.
+## The code reviews (`src/code-review/`)
 
-`unified/unified_analysis.pdf` compares the three reviews, reconstructs the
-algorithm, proves the supporting mathematics, executes the program and the
-reviews' test suites in Wolfram 15.0.1, catalogues 27 defects with evidence,
-presents the corrected implementation and evaluates it on the same battery, and
-lists future improvements. Everything reported there is reproducible from
-`unified/harness/` (Wolfram scripts, absolute paths at their top) and is
-recorded verbatim in `unified/logs/`; `unified/tables/` holds the result
-tables generated from those logs. Build with three passes of `pdflatex` from
-`src/code-review/unified/`; the listings appendix reads the two `.wl` files
-from `src/`.
+`unified-A/unified_analysis.pdf` (first round) compares three reviews of the
+original program, reconstructs the algorithm, proves the supporting
+mathematics, executes the program and the reviews' test suites in Wolfram
+15.0.1, catalogues 27 defects with evidence, presents `StradFixed.wl` and
+evaluates it on the same battery, and lists future improvements. Its harness,
+logs and generated tables are alongside; its Section 5.7 records the probing
+session that produced `KNOWN_GAPS.md`.
+
+`review-4`, `review-5` and `review-6` are three independent reviews of
+`StradFixed.wl`. Each contains a report, a proposed replacement
+`StradImproved.wl`, a native test suite that its author could not run, and
+executed SymPy checks.
+
+`unified-B/unified_analysis_B.pdf` (second round) compares and assesses those
+three reviews, consolidates their findings with the probing results into a
+catalogue of 23 issues, presents the design of `StradFixed2.wl` with the
+mathematics of its new fast paths, reruns the first-round battery and
+randomized families on it, reruns the probing scripts (all fifteen misses now
+denested), runs a 142-test regression suite that translates the three reviews'
+suites, and runs the reviews' own suites against their own proposals. Everything
+is reproducible from `unified-B/harness/` and recorded in `unified-B/logs/`.
 
 ## The literature (`docs/`)
 
@@ -88,7 +107,7 @@ SymPy, Maxima, Wolfram Language, Maple, SageMath, PARI/GP and FLINT/Calcium,
 infinite radicals, a correction ledger, and reading paths. `docs/report/verify.py`
 runs 59 exact SymPy checks of the identities used; its transcript and JSON
 record sit beside it. The typography follows the ProveIt
-`Analysis/FabiusFunction/docs` house style.
+`Analysis/FabiusFunction/docs` house style, as does the second-round report.
 
 `docs/literature/` is the dataset of freely available sources cited in the
 guide: 102 assets (54 PDFs, 49 TeX sources) covering 66 works, arranged as
@@ -107,14 +126,14 @@ corrections and the outcome of both download passes.
 
 ## Requirements
 
-- Wolfram Language 15 with `wolframscript` for the program and the harness.
+- Wolfram Language 15 with `wolframscript` for the program and the harnesses.
   A single-seat license allows one kernel at a time; the harness scripts run
   sequentially.
 - A TeX distribution with `pdflatex` (MiKTeX and TeX Live both work) for the
-  reports. The research guide uses the Libertinus fonts and falls back to
-  Latin Modern if they are absent.
-- Python 3.10+ with SymPy for `docs/report/verify.py` and for the download
-  scripts (which need no third-party packages).
+  reports. The research guide and the second-round report use the Libertinus
+  fonts and fall back to Latin Modern if they are absent.
+- Python 3.10+ with SymPy for `docs/report/verify.py` and the reviews' checks,
+  and for the download scripts (which need no third-party packages).
 
 ## Conventions
 
