@@ -1,14 +1,15 @@
 RADICAL DENESTING: A UNIFIED RESEARCH GUIDE
 Research cutoff: September 5, 2026
 
-This directory is the single unified report on the radical-denesting
-literature. It was originally one of three unified reports prepared
-independently from the same four-report corpus (docs/reports/report-1,
-report-2 and report-3). On September 5, 2026 the other two were merged into
-this one: their overlapping exposition was consolidated, their unique
-material, bibliography entries and verification checks were retained, and
-the two source directories were deleted. Section 1.4 of the report lists
-what was folded in from each.
+This directory (docs/report) is the single unified report on the
+radical-denesting literature. It was originally one of three unified reports
+prepared independently from the same four-report corpus (then
+docs/reports/report-1, report-2 and report-3). On September 5, 2026 the other
+two were merged into this one: their overlapping exposition was consolidated,
+their unique material, bibliography entries and verification checks were
+retained, and the two source directories were deleted; the survivor was then
+moved to docs/report. Section 1.4 of the report lists what was folded in from
+each.
 
 CONTENTS
 

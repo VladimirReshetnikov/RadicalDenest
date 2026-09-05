@@ -26,5 +26,5 @@ Public symbols (context ``RadicalDenest` ``): `Strad`, `DenestRadicals`,
 `DenestCore`, `RationalizeDenominator`, `Factorc`, `RadicalDepth`,
 `RadicalCost`, `ExactAlgebraicQ`, `CertifiedEqualQ`.
 
-See `reports/unified/unified_analysis.pdf`, Section 7, for the change list,
+See `src/code-review/unified/unified_analysis.pdf`, Section 7, for the change list,
 and Section 5 for the test results on the same battery as the original.

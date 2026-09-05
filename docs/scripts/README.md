@@ -1,7 +1,8 @@
 # Literature download scripts
 
 Three independently prepared packages for downloading the freely available
-literature cited in `docs/reports/report-{1,2,3}`. All three were produced in
+literature cited in the three unified literature reports (since merged into
+`docs/report`). All three were produced in
 environments without outbound network access, so none had been executed against
 the live sites before 5 September 2026.
 
