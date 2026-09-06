@@ -1,2 +1,0 @@
-# Version used for the independent mathematics checks; no Wolfram dependency.
-sympy==1.14.0
