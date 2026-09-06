@@ -1,10 +1,11 @@
 # Denestable inputs that `StradFixed.wl` does not denest
 
 > Status (5 September 2026, later the same day): all fifteen inputs below are
-> denested by the second corrected version `StradFixed2.wl`; see
-> `src/code-review/unified-B/unified_analysis_B.pdf`, Section 7.4, and the
-> `G-*` tests of `src/code-review/unified-B/tests/StradFixed2.wlt`. This file
-> describes the first corrected version.
+> denested by the second corrected version `StradFixed2.wl` (see
+> `src/code-review/unified-B/unified_analysis_B.pdf`, Section 7.4) and by the
+> third, `StradFixed3.wl` (`src/code-review/unified-C`, Section 7.5); both
+> regression suites carry them as `G-*` tests. This file describes the first
+> corrected version.
 
 Findings of a probing session on 5 September 2026 (Wolfram 15.0.1). Four
 batteries of denestable inputs taken from the literature guide

@@ -7,7 +7,7 @@ program that denests radicals: it rewrites an expression such as
 root extractions exists and can be found.
 
 The repository has three parts: the program and its corrected versions
-(`src/`), two rounds of code review with kernel experiments
+(`src/`), three rounds of code review with kernel experiments
 (`src/code-review/`), and a research guide to the mathematical and
 computer-algebra literature on radical denesting together with the freely
 available sources themselves (`docs/`).
@@ -22,17 +22,21 @@ available sources themselves (`docs/`).
 │   ├── original/Strad.wl         the program under review, unchanged (585 lines)
 │   ├── corrected/
 │   │   ├── StradFixed.wl         first corrected version (context RadicalDenest`)
-│   │   ├── StradFixed2.wl        second corrected version, current (context RadicalDenest2`)
-│   │   └── KNOWN_GAPS.md         inputs the first version misses; all handled by the second
+│   │   ├── StradFixed2.wl        second corrected version (context RadicalDenest2`)
+│   │   ├── StradFixed3.wl        third corrected version, current (context RadicalDenest3`)
+│   │   └── KNOWN_GAPS.md         inputs the first version misses; all handled by the later ones
 │   └── code-review/
 │       ├── unified-A/            first round: analysis of Strad.wl from three reviews of it
 │       │                         (those reviews are no longer in the repository), kernel
 │       │                         experiments, and StradFixed.wl
-│       ├── review-4/             three independent reviews of StradFixed.wl, each with a
-│       ├── review-5/             report (PDF + LaTeX), a proposed replacement
-│       ├── review-6/             StradImproved.wl, a native test suite and SymPy checks
-│       └── unified-B/            second round: the three reviews compared and consolidated,
-│                                 StradFixed2.wl designed and evaluated, regression suite
+│       ├── unified-B/            second round: three reviews of StradFixed.wl (review-4/5/6,
+│       │                         no longer in the repository) compared and consolidated,
+│       │                         StradFixed2.wl designed and evaluated, regression suite
+│       ├── review-7/             three independent reviews of StradFixed2.wl, each with a
+│       ├── review-8/             report (PDF + LaTeX), a proposed StradFixed3.wl, a native
+│       ├── review-9/             test suite and SymPy checks
+│       └── unified-C/            third round: the three reviews compared and consolidated,
+│                                 StradFixed3.wl designed and evaluated, regression suite
 └── docs/
     ├── report/                   unified research guide to the denesting literature
     ├── literature/               downloaded papers, theses, documentation, web resources
@@ -57,7 +61,7 @@ symbolic host, that its budgets did not bound whole calls, that its option
 defaults were not propagated, that its multiplier cap leaked, and that fifteen
 denestable inputs were left unchanged.
 
-`src/corrected/StradFixed2.wl` is the current version. It puts one acceptance
+`src/corrected/StradFixed2.wl` (second version) puts one acceptance
 gate in front of every candidate, runs each call inside one time and memory
 region with every expensive kernel operation bounded, resolves and validates
 options once, replaces the marker wrapper and the custom factorizer by a
@@ -65,8 +69,22 @@ congruence walk over arithmetic hosts, adds exact fast paths (direct, indirect,
 Gaussian, cubic-in-quadratic, Honsbeek, multi-surd), separates the phase of
 negative radicands, uses the linear factors of `x^k - rho` for Kummer roots and
 index reduction, bounds the multiplier queue at a single admission point, and
-returns structured reports. See `src/corrected/README.md` for usage and the
-option list.
+returns structured reports. Three further reviews then found that its
+admission test accepted non-algebraic `Root` objects, that a numeric prefilter
+could decide its public equality status, that two proposal stages could discard
+a better incumbent, that index reductions depended on recursive progress, that
+failed searches were memoized without their budget, and that its multi-surd
+solver missed the square-class cosets.
+
+`src/corrected/StradFixed3.wl` is the current version. It validates `Root` and
+`AlgebraicNumber` payloads, classifies equality by exact algebra only, threads
+incumbents through every stage, offers index reductions before recursion, keeps
+a budget-aware memo, runs every kernel operation and the report costs inside
+the resource region, rejects malformed calls, and adds three coverage
+extensions: the trace–norm criterion for every odd index up to a bound, a
+Honsbeek recognizer for every term with a rational cube, and a square-class
+coset search (integer relations, then rational systems) for multi-surd square
+roots. See `src/corrected/README.md` for usage and the option list.
 
 ## The code reviews (`src/code-review/`)
 
@@ -78,19 +96,32 @@ evaluates it on the same battery, and lists future improvements. Its harness,
 logs and generated tables are alongside; its Section 5.7 records the probing
 session that produced `KNOWN_GAPS.md`.
 
-`review-4`, `review-5` and `review-6` are three independent reviews of
-`StradFixed.wl`. Each contains a report, a proposed replacement
-`StradImproved.wl`, a native test suite that its author could not run, and
-executed SymPy checks.
-
-`unified-B/unified_analysis_B.pdf` (second round) compares and assesses those
-three reviews, consolidates their findings with the probing results into a
+`unified-B/unified_analysis_B.pdf` (second round) compares and assesses three
+independent reviews of `StradFixed.wl` (`review-4`, `review-5`, `review-6`,
+since removed from the repository; each had a report, a proposed replacement
+`StradImproved.wl`, a native test suite its author could not run, and executed
+SymPy checks), consolidates their findings with the probing results into a
 catalogue of 23 issues, presents the design of `StradFixed2.wl` with the
 mathematics of its new fast paths, reruns the first-round battery and
 randomized families on it, reruns the probing scripts (all fifteen misses now
-denested), runs a 142-test regression suite that translates the three reviews'
+denested), runs a 144-test regression suite that translates the three reviews'
 suites, and runs the reviews' own suites against their own proposals. Everything
 is reproducible from `unified-B/harness/` and recorded in `unified-B/logs/`.
+
+`review-7`, `review-8` and `review-9` are three independent reviews of
+`StradFixed2.wl` at commit `9000d6f`. Each contains a report, a proposed
+`StradFixed3.wl` in the context `RadicalDenest3\``, a native test suite that
+its author could not run, and executed SymPy checks.
+
+`unified-C/unified_analysis_C.pdf` (third round) compares and assesses those
+three reviews, runs their probes against `StradFixed2.wl`, consolidates their
+findings into a catalogue of 22 issues, presents the design changes of
+`StradFixed3.wl` with the mathematics of its coverage extensions, reruns the
+battery and randomized families on both versions side by side, reruns the
+probing scripts, runs a 230-test regression suite that adds the translated
+suites of the three reviews, runs the reviews' own suites against their own
+proposals, and runs review-8's differential corpus. Everything is reproducible
+from `unified-C/harness/` and recorded in `unified-C/logs/`.
 
 ## The literature (`docs/`)
 
@@ -107,7 +138,7 @@ SymPy, Maxima, Wolfram Language, Maple, SageMath, PARI/GP and FLINT/Calcium,
 infinite radicals, a correction ledger, and reading paths. `docs/report/verify.py`
 runs 59 exact SymPy checks of the identities used; its transcript and JSON
 record sit beside it. The typography follows the ProveIt
-`Analysis/FabiusFunction/docs` house style, as does the second-round report.
+`Analysis/FabiusFunction/docs` house style, as do the second- and third-round reports.
 
 `docs/literature/` is the dataset of freely available sources cited in the
 guide: 102 assets (54 PDFs, 49 TeX sources) covering 66 works, arranged as
@@ -130,8 +161,8 @@ corrections and the outcome of both download passes.
   A single-seat license allows one kernel at a time; the harness scripts run
   sequentially.
 - A TeX distribution with `pdflatex` (MiKTeX and TeX Live both work) for the
-  reports. The research guide and the second-round report use the Libertinus
-  fonts and fall back to Latin Modern if they are absent.
+  reports. The research guide and the second- and third-round reports use the
+  Libertinus fonts and fall back to Latin Modern if they are absent.
 - Python 3.10+ with SymPy for `docs/report/verify.py` and the reviews' checks,
   and for the download scripts (which need no third-party packages).
 

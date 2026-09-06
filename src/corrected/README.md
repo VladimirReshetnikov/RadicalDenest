@@ -1,16 +1,65 @@
 # Corrected versions of `Strad.wl`
 
-Two generations of the corrected denester live here.
+Three generations of the corrected denester live here.
 
 | File | Context | Produced by | Reviewed by |
 |---|---|---|---|
-| `StradFixed.wl` | ``RadicalDenest` `` | `src/code-review/unified-A` (first unified analysis) | `src/code-review/review-4`, `review-5`, `review-6`; probing session (`KNOWN_GAPS.md`) |
-| `StradFixed2.wl` | ``RadicalDenest2` `` | `src/code-review/unified-B` (second unified analysis) | — |
+| `StradFixed.wl` | ``RadicalDenest` `` | `src/code-review/unified-A` (first unified analysis) | review-4, review-5, review-6 (no longer in the repository; assessed in unified-B); probing session (`KNOWN_GAPS.md`) |
+| `StradFixed2.wl` | ``RadicalDenest2` `` | `src/code-review/unified-B` (second unified analysis) | `src/code-review/review-7`, `review-8`, `review-9` |
+| `StradFixed3.wl` | ``RadicalDenest3` `` | `src/code-review/unified-C` (third unified analysis) | — |
 
-`StradFixed2.wl` is the current version. `StradFixed.wl` is kept because the
-first unified analysis, its three reviews and `KNOWN_GAPS.md` refer to it; the
-two packages use different contexts and can be loaded side by side for
-differential testing.
+`StradFixed3.wl` is the current version. The earlier versions are kept because
+the analyses, the reviews and `KNOWN_GAPS.md` refer to them; the three packages
+use different contexts and can be loaded side by side for differential testing.
+
+## StradFixed3.wl
+
+```wl
+Get["src/corrected/StradFixed3.wl"];
+Strad[Sqrt[118 + 2 Sqrt[210] + 14 Sqrt[55] + 2 Sqrt[462]]]   (* Sqrt[6] + Sqrt[35] + Sqrt[77]: coset search *)
+Strad[(239 + 169 Sqrt[2])^(1/7)]                 (* 1 + Sqrt[2]: odd-index trace-norm recipe *)
+Strad[Sqrt[28^(1/3) - 3]]                        (* (-1 - 28^(1/3) + 98^(1/3))/3: Honsbeek with a rational summand *)
+Strad[(3 + 2 Sqrt[2])^(1/6), "MaxRecursion" -> 0]   (* (1 + Sqrt[2])^(1/3): index reduction without recursion *)
+ExactAlgebraicQ[Root[#^5 + # - Pi &, 1]]         (* False: exact is not algebraic *)
+EqualityStatus[Sqrt[2], -Sqrt[2]]                (* "Different", decided by exact algebra *)
+Strad[Sqrt[2], 17]                               (* Failure["InvalidOption", ...] *)
+DenestReport[Sqrt[5 + 2 Sqrt[6]]]                (* adds ResultChanged, CertificateKind, CertificatesTruncated *)
+```
+
+Contract: as for `StradFixed2.wl` below, with these corrections. The exact
+input grammar admits rationals, Gaussian rationals, their `Plus`, `Times` and
+rational-`Power` combinations, `Root` objects whose defining polynomial (single
+or triangular-system form) has coefficients in that grammar and a valid index,
+and `AlgebraicNumber` objects with an admitted generator and Gaussian-rational
+coefficients; other exact objects are opaque host nodes. `EqualityStatus` is
+decided by exact algebra in every branch; `"NumericPrefilter"` (now `False` by
+default) only prunes search candidates. Every proposal stage receives and
+returns its incumbent. Unchanged results are memoized together with the budget
+that produced them and are reused only by searches with no larger budget. The
+classification of the input and the report costs run inside the resource
+region. Malformed calls such as `Strad[e, 17]` and `Strad[]` return a
+`Failure`.
+
+What it does that `StradFixed2.wl` did not: the trace–norm criterion for every
+odd index up to `"MaxOddIndex"` (default 9) via the Dickson recurrences; a
+Honsbeek recognizer that accepts any two-term sum of terms with rational cubes,
+including rational summands and terms like `2^(2/3) 7^(1/3)`; a square-class
+coset search for multi-surd square roots (an integer-relation stage per coset
+certified by `RootReduce`, then rational systems), which finds
+`Sqrt[6] + Sqrt[35] + Sqrt[77]`, `Sqrt[6] + Sqrt[10] + Sqrt[21]`,
+`Sqrt[10] + Sqrt[15] + Sqrt[35]`, `Sqrt[30] + Sqrt[42] + Sqrt[70]` and
+`(Sqrt[2] + Sqrt[3] + Sqrt[5])/2` without the multiplier search; index
+reductions such as `(3 + 2 Sqrt[2])^(1/4) -> Sqrt[1 + Sqrt[2]]` offered before
+recursion.
+
+New options (defaults): `"MaxOddIndex"` (9), `"DiscriminantBatchCap"` (24),
+`"MaxCosets"` (16); `"NumericPrefilter"` now defaults to `False`. All other
+options and public symbols are those of `StradFixed2.wl`.
+
+See `src/code-review/unified-C/unified_analysis_C.pdf` for the catalogue of the
+22 issues it addresses, the design changes, the mathematics and the executed
+experiments; the regression suite is
+`src/code-review/unified-C/tests/StradFixed3.wlt` (230 tests).
 
 ## StradFixed2.wl
 
@@ -62,7 +111,9 @@ Options (defaults): `"AllLevels"` (False), `"Verbose"` (False), `"Trace"`
 See `src/code-review/unified-B/unified_analysis_B.pdf` for the catalogue of the
 23 issues it addresses, the design, the mathematics of the fast paths and the
 executed experiments; the regression suite is
-`src/code-review/unified-B/tests/StradFixed2.wlt`.
+`src/code-review/unified-B/tests/StradFixed2.wlt`. Its three reviews are
+`src/code-review/review-7`, `review-8` and `review-9`; their findings are
+addressed by `StradFixed3.wl`.
 
 ## StradFixed.wl
 
